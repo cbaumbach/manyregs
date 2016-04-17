@@ -10,3 +10,4 @@ Authors@R: person("Clemens", "Baumbach", role = c("aut", "cre"),
     email = "clemens.baumbach@gmx.net")
 License: GPL (>= 2)
 suggests: testthat
+RoxygenNote: 5.0.1
