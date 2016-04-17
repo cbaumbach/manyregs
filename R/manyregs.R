@@ -34,8 +34,23 @@ create_models <- function(outcomes, exposures, adjustments = NULL, f) {
 #' @param fname Name of fitting function
 #' @return Model object of S3 class "manyregs_model".
 new_model <- function(outcome, exposure, adjustment, f, fname) {
-    list(outcome = outcome,
+    model <- list(outcome = outcome,
         exposure = exposure,
         adjustment = adjustment,
         f = f, fname = fname)
+    class(model) <- "manyregs_model"
+    model
+}
+
+#' Coerce a model to type character.
+#'
+#' @param x Model object to be coerced.
+#' @export
+as.character.manyregs_model <- function(x) {
+    if (is.null(x$adjustment)) {
+        sprintf("%s ~ %s  (%s)", x$outcome, x$exposure, x$fname)
+    } else {
+        adjustment <- paste(x$adjustment, collapse = " + ")
+        sprintf("%s ~ %s + %s  (%s)", x$outcome, x$exposure, adjustment, x$fname)
+    }
 }
