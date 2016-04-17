@@ -54,3 +54,14 @@ as.character.manyregs_model <- function(x) {
         sprintf("%s ~ %s + %s  (%s)", x$outcome, x$exposure, adjustment, x$fname)
     }
 }
+
+#' Print model.
+#'
+#' @param x Model to be printed
+#' @result Returns `x' invisibly.
+#'
+#' @export
+print.manyregs_model <- function(x) {
+    cat(as.character(x), "\n", sep = "")
+    invisible(x)
+}
