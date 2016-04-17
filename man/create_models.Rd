@@ -16,6 +16,10 @@ variables}
 
 \item{f}{Function for fitting a model to a dataset.}
 }
+\value{
+List of models where every model is an object of S3 class
+    "manyregs_model".
+}
 \description{
 Create models from ingredients.
 }
