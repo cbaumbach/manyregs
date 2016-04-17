@@ -9,3 +9,4 @@ Date: 2016-04-17
 Authors@R: person("Clemens", "Baumbach", role = c("aut", "cre"),
     email = "clemens.baumbach@gmx.net")
 License: GPL (>= 2)
+suggests: testthat
