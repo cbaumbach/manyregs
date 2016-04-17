@@ -4,7 +4,7 @@
 \alias{create_models}
 \title{Create models from ingredients.}
 \usage{
-create_models(outcomes, exposures, adjustments, f)
+create_models(outcomes, exposures, adjustments = NULL, f)
 }
 \arguments{
 \item{outcomes}{Character vector with names of outcome variables}

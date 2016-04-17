@@ -39,3 +39,17 @@ test_that("2 outcomes, 1 exposure, 1 adjustment", {
     expect_equal(foo, m2$f)
     expect_equal("foo", m2$fname)
 })
+
+
+test_that("1 outcome, 1 exposure, 0 adjustment", {
+    outcome <- "y"
+    exposure <- "x"
+    models <- create_models(outcome, exposure, f = foo)
+    expect_equal(1, length(models))
+    m <- models[[1]]
+    expect_equal(outcome, m$outcome)
+    expect_equal(exposure, m$exposure)
+    expect_equal(NULL, m$adjustment)
+    expect_equal(foo, m$f)
+    expect_equal("foo", m$fname)
+})

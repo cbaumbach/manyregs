@@ -9,8 +9,10 @@
 #'     "manyregs_model".
 #'
 #' @export
-create_models <- function(outcomes, exposures, adjustments, f) {
+create_models <- function(outcomes, exposures, adjustments = NULL, f) {
     models <- NULL
+    if (is.null(adjustments))
+        adjustments <- list(adjustments)
     fname <- deparse(substitute(f))
     for (o in outcomes) {
         for (e in exposures) {
