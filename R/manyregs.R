@@ -10,8 +10,16 @@
 #'
 #' @export
 create_models <- function(outcomes, exposures, adjustments, f) {
-    m <- new_model(outcomes[1L], exposures[1L], adjustments[[1L]], f, deparse(substitute(f)))
-    list(m)
+    models <- NULL
+    fname <- deparse(substitute(f))
+    for (o in outcomes) {
+        for (e in exposures) {
+            for (a in adjustments) {
+                models <- c(list(new_model(o, e, a, f, fname)), models)
+            }
+        }
+    }
+    rev(models)
 }
 
 #' Create a new model object of S3 class "manyregs_model".
