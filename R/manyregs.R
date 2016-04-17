@@ -10,10 +10,22 @@
 #'
 #' @export
 create_models <- function(outcomes, exposures, adjustments, f) {
-    m <- list(
-        outcome = outcomes[1L],
-        exposure = exposures[1L],
-        adjustment = adjustments[[1L]],
-        f = f, fname = deparse(substitute(f)))
+    m <- new_model(outcomes[1L], exposures[1L], adjustments[[1L]], f, deparse(substitute(f)))
     list(m)
+}
+
+#' Create a new model object of S3 class "manyregs_model".
+#'
+#' @param outcome Name of outcome variable
+#' @param exposure Name of exposure variable
+#' @param adjustment Character vector with names of adjustment
+#'     variables
+#' @param f Function for fitting the model
+#' @param fname Name of fitting function
+#' @return Model object of S3 class "manyregs_model".
+new_model <- function(outcome, exposure, adjustment, f, fname) {
+    list(outcome = outcome,
+        exposure = exposure,
+        adjustment = adjustment,
+        f = f, fname = fname)
 }
