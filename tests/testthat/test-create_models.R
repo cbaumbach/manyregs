@@ -4,14 +4,16 @@ foo <- function() {
     # empty
 }
 
-test_that("one model", {
-    models <- create_models("y", "x", list(c("z1", "z2")), foo)
+test_that("1 outcome, 1 exposure, 1 adjustment", {
+    outcome <- "y"
+    exposure <- "x"
+    adjustment <- c("z1", "z2")
+    models <- create_models(outcome, exposure, list(adjustment), foo)
     expect_equal(1, length(models))
     m <- models[[1]]
-    expect_true(all(c("outcome", "exposure", "adjustment", "f", "fname") %in% names(m)))
-    expect_equal("y", m$outcome)
-    expect_equal("x", m$exposure)
-    expect_equal(c("z1", "z2"), m$adjustment)
+    expect_equal(outcome, m$outcome)
+    expect_equal(exposure, m$exposure)
+    expect_equal(adjustment, m$adjustment)
     expect_equal(foo, m$f)
     expect_equal("foo", m$fname)
 })
