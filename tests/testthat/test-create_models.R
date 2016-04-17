@@ -23,11 +23,17 @@ test_that("1 outcome, 1 exposure, 1 adjustment", {
     expect_true(has_model_with(models, "y", "x", c("z1", "z2"), foo, "foo"))
 })
 
-test_that("2 outcomes, 1 exposure, 1 adjustment", {
-    models <- create_models(c("y1", "y2"), "x", list(c("z1", "z2")), foo)
-    expect_equal(2, length(models))
-    expect_true(has_model_with(models, "y1", "x", c("z1", "z2"), foo, "foo"))
-    expect_true(has_model_with(models, "y2", "x", c("z1", "z2"), foo, "foo"))
+test_that("2 outcomes, 2 exposures, 2 adjustment", {
+    models <- create_models(c("y-1", "y-2"), c("x-1", "x-2"), list("z-1", "z-2"), foo)
+    expect_equal(8, length(models))
+    expect_true(has_model_with(models, "y-1", "x-1", "z-1", foo, "foo"))
+    expect_true(has_model_with(models, "y-1", "x-1", "z-2", foo, "foo"))
+    expect_true(has_model_with(models, "y-1", "x-2", "z-1", foo, "foo"))
+    expect_true(has_model_with(models, "y-1", "x-2", "z-2", foo, "foo"))
+    expect_true(has_model_with(models, "y-2", "x-1", "z-1", foo, "foo"))
+    expect_true(has_model_with(models, "y-2", "x-1", "z-2", foo, "foo"))
+    expect_true(has_model_with(models, "y-2", "x-2", "z-1", foo, "foo"))
+    expect_true(has_model_with(models, "y-2", "x-2", "z-2", foo, "foo"))
 })
 
 test_that("1 outcome, 1 exposure, 0 adjustment", {
