@@ -4,7 +4,17 @@
 \alias{create_models}
 \title{Create models from ingredients.}
 \usage{
-create_models()
+create_models(outcomes, exposures, adjustments, f)
+}
+\arguments{
+\item{outcomes}{Character vector with names of outcome variables}
+
+\item{exposures}{Character vector with names of exposure variables}
+
+\item{adjustments}{List of character vectors with names of adjustment
+variables}
+
+\item{f}{Function for fitting a model to a dataset.}
 }
 \description{
 Create models from ingredients.
