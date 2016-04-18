@@ -9,6 +9,9 @@
 \arguments{
 \item{x}{Model object to be coerced.}
 }
+\value{
+Character representation of model.
+}
 \description{
 Coerce a model to type character.
 }

@@ -50,6 +50,8 @@ new_model <- function(outcome, exposure, adjustment, f, fname, template = NULL) 
 #' Coerce a model to type character.
 #'
 #' @param x Model object to be coerced.
+#' @return Character representation of model.
+#'
 #' @export
 as.character.manyregs_model <- function(x) {
     sprintf("%s  (%s)", model_to_formula_string(x), x$fname)
