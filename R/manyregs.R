@@ -105,3 +105,14 @@ print.manyregs_model <- function(x) {
 formula.manyregs_model <- function(x, env = parent.frame()) {
     formula(model_to_formula_string(x), env = env)
 }
+
+#' Remove slots from a model.
+#'
+#' @param model Model from which to remove slots
+#' @param slots Character vector of slot names
+#' @return Model from which named slots were removed.
+remove_slots <- function(model, slots) {
+    reduced_model <- model[setdiff(names(model), slots)]
+    class(reduced_model) <- class(model)
+    reduced_model
+}
