@@ -55,6 +55,10 @@ as.character.manyregs_model <- function(x) {
     sprintf("%s  (%s)", model_to_formula_string(x), x$fname)
 }
 
+#' Convert model to a formula-like string.
+#'
+#' @param x Model to be converted
+#' @return Formula-like character string representing the model.
 model_to_formula_string <- function(x) {
     if (is.null(x$adjustment)) {
         sprintf("%s ~ %s", x$outcome, x$exposure)
