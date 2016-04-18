@@ -21,3 +21,25 @@ test_that("one-by-one", {
 test_that("in parallel", {
     expect_equal(fit_models(models, NULL, cores = 2), fit_models(models, NULL))
 })
+
+test_that("error", {
+    throw_error <- function(model, data) {
+        stop("an error")
+    }
+    models <- create_models("y", "x", "z", throw_error)
+    expect_warning(fm <- fit_models(models, NULL)[[1]])
+    expect_match(fm$error, "an error")
+    expect_true("fit" %in% names(fm))
+    expect_equal(fm$fit, NULL)
+})
+
+test_that("warning", {
+    throw_warning <- function(model, data) {
+        warning("a warning")
+    }
+    models <- create_models("y", "x", "z", throw_warning)
+    expect_warning(fm <- fit_models(models, NULL)[[1]])
+    expect_match(fm$warning, "a warning")
+    expect_true("fit" %in% names(fm))
+    expect_equal(fm$fit, NULL)
+})

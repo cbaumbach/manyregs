@@ -116,7 +116,18 @@ formula.manyregs_model <- function(x, env = parent.frame()) {
 #' @export
 fit_models <- function(models, data, cores = 1L) {
     parallel::mclapply(models, mc.cores = cores, function(m) {
-        new_model(template = m, extra_slots = list(fit = m$f(m, data)))
+        tryCatch({
+            m$fit <- m$f(m, data)
+        }, warning = function(c) {
+            m$warning <<- conditionMessage(c)
+            m["fit"] <<- list(NULL)
+            warning(m$warning)
+        }, error = function(c) {
+            m$error <<- conditionMessage(c)
+            m["fit"] <<- list(NULL)
+            warning(m$error)
+        })
+        m
     })
 }
 
