@@ -1,6 +1,6 @@
 context("fit_models")
 
-test_that("happy path", {
+test_that("one-by-one", {
     f <- function(model, data) {
         as.character(model)
     }
