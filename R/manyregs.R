@@ -106,6 +106,19 @@ formula.manyregs_model <- function(x, env = parent.frame()) {
     formula(model_to_formula_string(x), env = env)
 }
 
+#' Fit models.
+#'
+#' @param models List of model objects
+#' @param data Dataset to which models should be fitted
+#' @return List of fitted models.
+#'
+#' @export
+fit_models <- function(models, data) {
+    lapply(models, function(m) {
+        new_model(template = m, extra_slots = list(fit = m$f(m, data)))
+    })
+}
+
 #' Remove slots from a model.
 #'
 #' @param model Model from which to remove slots
