@@ -47,11 +47,15 @@ new_model <- function(outcome, exposure, adjustment, f, fname) {
 #' @param x Model object to be coerced.
 #' @export
 as.character.manyregs_model <- function(x) {
+    sprintf("%s  (%s)", model_to_formula_string(x), x$fname)
+}
+
+model_to_formula_string <- function(x) {
     if (is.null(x$adjustment)) {
-        sprintf("%s ~ %s  (%s)", x$outcome, x$exposure, x$fname)
+        sprintf("%s ~ %s", x$outcome, x$exposure)
     } else {
         adjustment <- paste(x$adjustment, collapse = " + ")
-        sprintf("%s ~ %s + %s  (%s)", x$outcome, x$exposure, adjustment, x$fname)
+        sprintf("%s ~ %s + %s", x$outcome, x$exposure, adjustment)
     }
 }
 
@@ -64,4 +68,15 @@ as.character.manyregs_model <- function(x) {
 print.manyregs_model <- function(x) {
     cat(as.character(x), "\n", sep = "")
     invisible(x)
+}
+
+#' Convert model to formula.
+#'
+#' @param object Model to be converted to formula
+#' @param env Environment for formula
+#' @result An object of class "formula" representing the model.
+#'
+#' @export
+formula.manyregs_model <- function(x, env = parent.frame()) {
+    formula(model_to_formula_string(x), env = env)
 }
