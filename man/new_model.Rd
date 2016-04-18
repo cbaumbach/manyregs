@@ -4,7 +4,7 @@
 \alias{new_model}
 \title{Create a new model object of S3 class "manyregs_model".}
 \usage{
-new_model(outcome, exposure, adjustment, f, fname)
+new_model(outcome, exposure, adjustment, f, fname, template = NULL)
 }
 \arguments{
 \item{outcome}{Name of outcome variable}
@@ -17,6 +17,8 @@ variables}
 \item{f}{Function for fitting the model}
 
 \item{fname}{Name of fitting function}
+
+\item{template}{Model to use as template}
 }
 \value{
 Model object of S3 class "manyregs_model".

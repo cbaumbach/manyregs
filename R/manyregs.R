@@ -32,13 +32,18 @@ create_models <- function(outcomes, exposures, adjustments = NULL, f) {
 #'     variables
 #' @param f Function for fitting the model
 #' @param fname Name of fitting function
+#' @param template Model to use as template
 #' @return Model object of S3 class "manyregs_model".
-new_model <- function(outcome, exposure, adjustment, f, fname) {
-    model <- list(outcome = outcome,
-        exposure = exposure,
-        adjustment = adjustment,
-        f = f, fname = fname)
-    class(model) <- "manyregs_model"
+new_model <- function(outcome, exposure, adjustment, f, fname, template = NULL) {
+    if (is.null(template)) {
+        model <- list(outcome = outcome,
+            exposure = exposure,
+            adjustment = adjustment,
+            f = f, fname = fname)
+        class(model) <- "manyregs_model"
+    } else {
+        model <- template
+    }
     model
 }
 
