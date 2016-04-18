@@ -11,6 +11,9 @@
 
 \item{object}{Model to be converted to formula}
 }
+\value{
+An object of class "formula" representing the model.
+}
 \description{
 Convert model to formula.
 }

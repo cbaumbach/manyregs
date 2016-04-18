@@ -71,7 +71,7 @@ model_to_formula_string <- function(x) {
 #' Print model.
 #'
 #' @param x Model to be printed
-#' @result Returns `x' invisibly.
+#' @return Returns `x' invisibly.
 #'
 #' @export
 print.manyregs_model <- function(x) {
@@ -83,7 +83,7 @@ print.manyregs_model <- function(x) {
 #'
 #' @param object Model to be converted to formula
 #' @param env Environment for formula
-#' @result An object of class "formula" representing the model.
+#' @return An object of class "formula" representing the model.
 #'
 #' @export
 formula.manyregs_model <- function(x, env = parent.frame()) {

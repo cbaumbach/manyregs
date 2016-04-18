@@ -9,6 +9,9 @@
 \arguments{
 \item{x}{Model to be printed}
 }
+\value{
+Returns `x' invisibly.
+}
 \description{
 Print model.
 }
