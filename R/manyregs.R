@@ -110,11 +110,12 @@ formula.manyregs_model <- function(x, env = parent.frame()) {
 #'
 #' @param models List of model objects
 #' @param data Dataset to which models should be fitted
+#' @param cores Number of cores used to parallelize computation
 #' @return List of fitted models.
 #'
 #' @export
-fit_models <- function(models, data) {
-    lapply(models, function(m) {
+fit_models <- function(models, data, cores = 1L) {
+    parallel::mclapply(models, mc.cores = cores, function(m) {
         new_model(template = m, extra_slots = list(fit = m$f(m, data)))
     })
 }

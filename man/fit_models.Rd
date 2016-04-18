@@ -4,12 +4,14 @@
 \alias{fit_models}
 \title{Fit models.}
 \usage{
-fit_models(models, data)
+fit_models(models, data, cores = 1L)
 }
 \arguments{
 \item{models}{List of model objects}
 
 \item{data}{Dataset to which models should be fitted}
+
+\item{cores}{Number of cores used to parallelize computation}
 }
 \value{
 List of fitted models.
