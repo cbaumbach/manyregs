@@ -4,7 +4,8 @@
 \alias{new_model}
 \title{Create a new model object of S3 class "manyregs_model".}
 \usage{
-new_model(outcome, exposure, adjustment, f, fname, template = NULL)
+new_model(outcome, exposure, adjustment, f, fname, template = NULL,
+  extra_slots = NULL)
 }
 \arguments{
 \item{outcome}{Name of outcome variable}
@@ -19,11 +20,19 @@ variables}
 \item{fname}{Name of fitting function}
 
 \item{template}{Model to use as template}
+
+\item{extra_slots}{List of additional slots for model (see Details)}
 }
 \value{
 Model object of S3 class "manyregs_model".
 }
 \description{
 Create a new model object of S3 class "manyregs_model".
+}
+\details{
+The "extra_slots" argument is a list of key-value pairs.
+    It adds flexibility by allowing slots other than "outcome",
+    "exposure", "adjustment", "f", and "fname" to be included in
+    the model.
 }
 

@@ -33,17 +33,31 @@ create_models <- function(outcomes, exposures, adjustments = NULL, f) {
 #' @param f Function for fitting the model
 #' @param fname Name of fitting function
 #' @param template Model to use as template
+#' @param extra_slots List of additional slots for model (see Details)
+#'
+#' @details The "extra_slots" argument is a list of key-value pairs.
+#'     It adds flexibility by allowing slots other than "outcome",
+#'     "exposure", "adjustment", "f", and "fname" to be included in
+#'     the model.
+#'
 #' @return Model object of S3 class "manyregs_model".
-new_model <- function(outcome, exposure, adjustment, f, fname, template = NULL) {
-    if (is.null(template)) {
-        model <- list(outcome = outcome,
-            exposure = exposure,
-            adjustment = adjustment,
-            f = f, fname = fname)
-        class(model) <- "manyregs_model"
-    } else {
-        model <- template
+new_model <- function(outcome, exposure, adjustment, f, fname, template = NULL, extra_slots = NULL) {
+    model <- if (is.null(template)) list() else template
+    args <- match.call()
+    for (argname in names(args)) {
+        if (argname %in% c("template", "extra_slots"))
+            next
+        arg <- args[[argname]]
+        if (is.language(arg))
+            arg <- eval.parent(arg)
+        model[[argname]] <- arg
     }
+    if (!is.null(extra_slots)) {
+        for (slot in names(extra_slots)) {
+            model[[slot]] <- extra_slots[[slot]]
+        }
+    }
+    class(model) <- "manyregs_model"
     model
 }
 
