@@ -207,3 +207,51 @@ summarize_non_fitted_models <- function(models) {
     data.frame(models = vapply(models, as.character, character(1L)),
         stringsAsFactors = FALSE)
 }
+
+#' Tabulate a categorical variable.
+#'
+#' @param x Categorical variable to tabulate
+#' @param label Label to use for categorical variable
+#' @param digits Number of decimal digits to use in "%" column
+#' @return A data frame with columns "variable", "category", "N", "n",
+#'     "%", where "variable" is the name of the variable, "category"
+#'     is the level of the variable, "N" is the total number of
+#'     observations for the variable, "n" is the number of
+#'     observations per category of the variables, and "%" is the
+#'     percentage of observations that fall into a given category.
+#'
+#' @export
+freq <- function(x, label = NULL, digits = 2L) {
+    if (is.null(label))
+        label <- deparse(substitute(x))
+    counts <- table(x, useNA = "ifany")
+    d <- data.frame(
+        variable = label,
+        category = names(counts),
+        N = length(x),
+        n = as.integer(counts),
+        stringsAsFactors = FALSE)
+    d$`%` <- with(d, round(100*n/N, digits))
+    d
+}
+
+#' Tabulate categorical variables from data frame
+#'
+#' @param columns_names Columns names of categorical variables
+#' @param data Data frame containing categorical variables
+#' @param digits Number of decimal digits to use for "%" column
+#' @return A data frame with columns "variable", "category", "N", "n",
+#'     "%".  The "variable" column contains the column names of the
+#'     categorical variables from `data`.  The "category" column
+#'     contains the levels of the variables.  The "N" column contains
+#'     the total number of observations per variable.  The "n" column
+#'     contains the number of observations per category of each
+#'     variable.  The "%" column contains the percentage of
+#'     observations that fall into a given category.
+#'
+#' @export
+freqs <- function(column_names, data, digits = 2L) {
+    d <- do.call(rbind, Map(freq, data[column_names], column_names, digits))
+    rownames(d) <- NULL
+    d
+}
