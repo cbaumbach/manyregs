@@ -141,3 +141,69 @@ remove_slots <- function(model, slots) {
     class(reduced_model) <- class(model)
     reduced_model
 }
+
+#' Summarize a list of models.
+#'
+#' @param models Models to be summarized
+#' @return foobar
+#'
+#' @export
+summarize_models <- function(models) {
+    if (all(is_fitted(models))) {
+        summarize_fitted_models(models)
+    } else {
+        summarize_non_fitted_models(models)
+    }
+}
+
+#' Are models fitted?
+#'
+#' @param models List of models
+#' @return TRUE for fitted models, FALSE for non-fitted models.
+is_fitted <- function(models) {
+    vapply(models, function(m) {
+        "fit" %in% names(m)
+    }, logical(1L), USE.NAMES = FALSE)
+}
+
+#' Summarize a list of fitted models.
+#'
+#' @param models List of models
+#' @return A single data frame summarizing the fitted models.
+summarize_fitted_models <- function(models) {
+    do.call(rbind, lapply(models, function(m) {
+        x <- find_estimates(m$fit)
+        data.frame(
+            outcome = m$outcome,
+            variable = x$variable,
+            nobs = nobs(m$fit),
+            beta = x$beta,
+            se = x$se,
+            lcl = x$lcl,
+            ucl = x$ucl,
+            pvalue = x$pvalue,
+            model = as.character(m),
+            stringsAsFactors = FALSE)
+    }))
+}
+
+find_estimates <- function(fit) {
+    x <- coef(summary(fit))
+    d <- data.frame(variable = rownames(x),
+        beta = x[, 1], se = x[, 2], pvalue = x[, 4],
+        stringsAsFactors = FALSE)
+    ci <- confint(fit)
+    d$lcl <- ci[, 1]
+    d$ucl <- ci[, 2]
+    d
+}
+
+#' Summarize a list of non-fitted models.
+#'
+#' @param models List of models
+#' @return A data frame containing the printed representation of the
+#'     models.
+summarize_non_fitted_models <- function(models) {
+    data.frame(models = vapply(models, as.character, character(1L)),
+        stringsAsFactors = FALSE)
+}
