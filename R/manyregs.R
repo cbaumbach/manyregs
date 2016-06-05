@@ -255,3 +255,78 @@ freqs <- function(column_names, data, digits = 2L) {
     rownames(d) <- NULL
     d
 }
+
+#' Summarize distribution of a continuous variable
+#'
+#' @param x Values of a continuous variable
+#' @param label Label to use for continuous variable
+#' @param probs Percentages for which to include percentiles
+#' @param digits Number of decimal digits to use
+#' @return A data frame with columns "variable", "N", "NAs", "mean",
+#'     "sd", "iqr", "min", percentiles, "max".  The "variable" column
+#'     contains the name of the continuous variable.  The "N" columns
+#'     contains the number of observations for the variable (including
+#'     missing values).  The "NAs" column contains the number of
+#'     missing values.  The "mean", "sd", "iqr", "min", and "max"
+#'     columns contain the mean, standard deviation, inter-quartile
+#'     range, minimum, and maximum of the variable, respectively.  The
+#'     names of the percentile columns between the "min" and the "max"
+#'     column all start with "p" followed by the percentage
+#'     corresponding to the percentile.  The column containing the 5%
+#'     percentile would be called "p05".  The column with the 50%
+#'     percentile, or median, would be called "p50".
+#'
+#' @export
+distro <- function(x, label = NULL, probs = NULL, digits = 2L) {
+    if (is.null(label))
+        label <- deparse(substitute(x))
+    if (is.null(probs))
+        probs <- c(.01, .05, .1, .25, .5, .75, .9, .95, .99)
+    number_of_observations <- length(x)
+    number_of_missings <- sum(is.na(x))
+    x <- x[!is.na(x)]
+    d <- data.frame(
+        variable = label,
+        N = number_of_observations,
+        NAs = number_of_missings,
+        mean = mean(x),
+        sd = sd(x),
+        iqr = diff(quantile(x, c(.25, .75))),
+        min = min(x),
+        stringsAsFactors = FALSE)
+    for (p in probs) {
+        column_name <- paste0("p", 100 * p)
+        d[[column_name]] <- quantile(x, p)
+    }
+    d$max <- max(x)
+    d[-(1:3)] <- lapply(d[-(1:3)], round, digits = digits)
+    rownames(d) <- NULL
+    d
+}
+
+#' Summarize distribution of a continuous variable
+#'
+#' @param x Values of a continuous variable
+#' @param label Label to use for continuous variable
+#' @param probs Percentages for which to include percentiles
+#' @param digits Number of decimal digits to use
+#' @return A data frame with columns "variable", "N", "NAs", "mean",
+#'     "sd", "iqr", "min", percentiles, "max".  The "variable" column
+#'     contains the `column_names`.  The "N" column contains the total
+#'     number of observations per variable.  The "NAs" column contains
+#'     the number of missing observations for each variable.  The
+#'     "mean", "sd", "iqr", "min", and "max" variables contain the
+#'     mean, standard deviation, inter-quartile range, minimum, and
+#'     maximum of each variable, respectively.  The names of the
+#'     percentile columns between the "min" and the "max" column all
+#'     start with "p" followed by the percentage corresponding to the
+#'     percentile.  The 5% percentile column would be called "p5",
+#'     while the 50% percentile, or median, column column would be
+#'     called "p50".
+#'
+#' @export
+distros <- function(column_names, data, probs = NULL, digits = 2L) {
+    d <- do.call(rbind, Map(distro, data[column_names], column_names, list(probs), digits))
+    rownames(d) <- NULL
+    d
+}
