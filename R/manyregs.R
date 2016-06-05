@@ -330,3 +330,31 @@ distros <- function(column_names, data, probs = NULL, digits = 2L) {
     rownames(d) <- NULL
     d
 }
+
+#' Compare the means of two groups using a t-test
+#'
+#' @param column_names Column names of variables
+#' @param group1 Logical vector defining observations in 1st group
+#' @param group2 Logical vector defining observations in 2nd group
+#' @param data Data frame containing variables `column_names`
+#' @param digits Number of decimal digits in `pval` column
+#' @return A data frame with columns "variable", "pval", "pvalue".
+#'     The "variable" column contains the name of the variable whose
+#'     means were compared between `group1` and `group2`.  The "pval"
+#'     column contains the p-value resulting comparing the means of
+#'     `group1` and `group2` using a t-test, rounded to `digits`
+#'     decimal digits for better readability.  The "pvalue" column
+#'     contains the exact p-value.
+#'
+#' @export
+compare_means <- function(column_names, group1, group2, data, digits = 4L) {
+    pvalues <- vapply(column_names, function(column) {
+        x <- data[[column]]
+        t.test(x[group1], x[group2])$p.value
+    }, double(1), USE.NAMES = FALSE)
+    data.frame(
+        variable = column_names,
+        pval = round(pvalues, digits),
+        pvalue = pvalues,
+        stringsAsFactors = FALSE)
+}
