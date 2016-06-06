@@ -64,10 +64,11 @@ new_model <- function(outcome, exposure, adjustment, f, fname, template = NULL, 
 #' Coerce a model to type character.
 #'
 #' @param x Model object to be coerced.
+#' @param \dots Ignored.
 #' @return Character representation of model.
 #'
 #' @export
-as.character.manyregs_model <- function(x) {
+as.character.manyregs_model <- function(x, ...) {
     sprintf("%s  (%s)", model_to_formula_string(x), x$fname)
 }
 
@@ -87,22 +88,24 @@ model_to_formula_string <- function(x) {
 #' Print model.
 #'
 #' @param x Model to be printed
+#' @param \dots Ignored
 #' @return Returns `x' invisibly.
 #'
 #' @export
-print.manyregs_model <- function(x) {
+print.manyregs_model <- function(x, ...) {
     cat(as.character(x), "\n", sep = "")
     invisible(x)
 }
 
 #' Convert model to formula.
 #'
-#' @param object Model to be converted to formula
+#' @param x Model to be converted to formula
 #' @param env Environment for formula
+#' @param \dots Ignored
 #' @return An object of class "formula" representing the model.
 #'
 #' @export
-formula.manyregs_model <- function(x, env = parent.frame()) {
+formula.manyregs_model <- function(x, env = parent.frame(), ...) {
     formula(model_to_formula_string(x), env = env)
 }
 
@@ -237,7 +240,7 @@ freq <- function(x, label = NULL, digits = 2L) {
 
 #' Tabulate categorical variables from data frame
 #'
-#' @param columns_names Columns names of categorical variables
+#' @param column_names Character vector with names of categorical variables
 #' @param data Data frame containing categorical variables
 #' @param digits Number of decimal digits to use for "\%" column
 #' @return A data frame with columns "variable", "category", "N", "n",
@@ -306,8 +309,8 @@ distro <- function(x, label = NULL, probs = NULL, digits = 2L) {
 
 #' Summarize distribution of a continuous variable
 #'
-#' @param x Values of a continuous variable
-#' @param label Label to use for continuous variable
+#' @param column_names Character vector with names of continuous variables
+#' @param data Data frame containing variables `column_names`
 #' @param probs Percentages for which to include percentiles
 #' @param digits Number of decimal digits to use
 #' @return A data frame with columns "variable", "N", "NAs", "mean",

@@ -7,13 +7,13 @@
 distros(column_names, data, probs = NULL, digits = 2L)
 }
 \arguments{
+\item{column_names}{Character vector with names of continuous variables}
+
+\item{data}{Data frame containing variables `column_names`}
+
 \item{probs}{Percentages for which to include percentiles}
 
 \item{digits}{Number of decimal digits to use}
-
-\item{x}{Values of a continuous variable}
-
-\item{label}{Label to use for continuous variable}
 }
 \value{
 A data frame with columns "variable", "N", "NAs", "mean",

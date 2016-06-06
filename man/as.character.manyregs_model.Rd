@@ -4,10 +4,12 @@
 \alias{as.character.manyregs_model}
 \title{Coerce a model to type character.}
 \usage{
-\method{as.character}{manyregs_model}(x)
+\method{as.character}{manyregs_model}(x, ...)
 }
 \arguments{
 \item{x}{Model object to be coerced.}
+
+\item{\dots}{Ignored.}
 }
 \value{
 Character representation of model.

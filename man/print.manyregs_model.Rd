@@ -4,10 +4,12 @@
 \alias{print.manyregs_model}
 \title{Print model.}
 \usage{
-\method{print}{manyregs_model}(x)
+\method{print}{manyregs_model}(x, ...)
 }
 \arguments{
 \item{x}{Model to be printed}
+
+\item{\dots}{Ignored}
 }
 \value{
 Returns `x' invisibly.

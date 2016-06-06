@@ -4,12 +4,14 @@
 \alias{formula.manyregs_model}
 \title{Convert model to formula.}
 \usage{
-\method{formula}{manyregs_model}(x, env = parent.frame())
+\method{formula}{manyregs_model}(x, env = parent.frame(), ...)
 }
 \arguments{
+\item{x}{Model to be converted to formula}
+
 \item{env}{Environment for formula}
 
-\item{object}{Model to be converted to formula}
+\item{\dots}{Ignored}
 }
 \value{
 An object of class "formula" representing the model.

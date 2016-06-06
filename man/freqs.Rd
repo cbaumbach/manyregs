@@ -7,11 +7,11 @@
 freqs(column_names, data, digits = 2L)
 }
 \arguments{
+\item{column_names}{Character vector with names of categorical variables}
+
 \item{data}{Data frame containing categorical variables}
 
 \item{digits}{Number of decimal digits to use for "\%" column}
-
-\item{columns_names}{Columns names of categorical variables}
 }
 \value{
 A data frame with columns "variable", "category", "N", "n",
