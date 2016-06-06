@@ -365,3 +365,31 @@ compare_means <- function(column_names, by, data, digits = 4L) {
         pvalue = pvalues,
         stringsAsFactors = FALSE)
 }
+
+#' Compare distributions using a Chi-Squared test
+#'
+#' @param column_names Column names of variables
+#' @param by Name of a grouping variable
+#' @param data Data frame containing variables `column_names` and `by`
+#' @param digits Number of decimal digits in `pval` column
+#' @return A data frame with columns "variable", "by", "pval",
+#'     "pvalue".  The "variable" column contains the name of the
+#'     variables whose distributions are compared between the levels
+#'     of the `by` variable whose name is contained in the "by"
+#'     column.  The "pval" column contains the p-value resulting from
+#'     the comparison using Pearson's Chi-squared test, rounded to
+#'     `digits` decimal digits for better readability.  The "pvalue"
+#'     column contains the exact p-value.
+#'
+#' @export
+compare_distros <- function(column_names, by, data, digits = 4L) {
+    pvalues <- vapply(column_names, function(column_name) {
+        chisq.test(data[[column_name]], data[[by]])$p.value
+    }, double(1), USE.NAMES = FALSE)
+    data.frame(
+        variable = column_names,
+        by = by,
+        pval = round(pvalues, digits),
+        pvalue = pvalues,
+        stringsAsFactors = FALSE)
+}
