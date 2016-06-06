@@ -393,3 +393,46 @@ compare_distros <- function(column_names, by, data, digits = 4L) {
         pvalue = pvalues,
         stringsAsFactors = FALSE)
 }
+
+#' Extract models with selected outcomes, exposures, and adjustments.
+#'
+#' @param models List of models
+#' @param outcomes Character vector with names of outcome variables
+#' @param exposures Character vector with names of exposure variables
+#' @param adjustments List of character vectors with names of
+#'     adjustment variables
+#' @param drop Drop matching models if TRUE (default FALSE)
+#' @param combine If "and" (default) models must match all of
+#'     `outcomes`, `exposures`, and `adjustments`.  If "or" a single
+#'     match suffices.
+#' @return A list of models whose outcome, exposure, and adjustment
+#'     match match `outcomes`, `exposures`, and `adjustments`.  The
+#'     exact nature of the match depends on the values of `drop` and
+#'     `combine`.
+#'
+#' @export
+filter_models <- function(models, outcomes = NULL, exposures = NULL,
+    adjustments = NULL, drop = FALSE, combine = NULL)
+{
+    if (is.null(combine))
+        combine <- "and"
+    if (length(combine) != 1L)
+        stop("`combine` must be of length 1")
+    if (! combine %in% c("and", "or"))
+        stop("`combine` must be one of \"and\" or \"or\": \"", combine, "\"")
+    combine_fn <- switch(combine, and = `&&`, or = `||`, `&&`)
+    Filter(function(model) {
+        has_outcome <- if (is.null(outcomes)) TRUE else model$outcome %in% outcomes
+        has_exposure <- if (is.null(exposures)) TRUE else model$exposure %in% exposures
+        has_adjustment <- if (is.null(adjustments)) TRUE else {
+            Position(function(adjustment) {
+                identical(adjustment, model$adjustment)
+            }, adjustments, nomatch = 0L) != 0L
+        }
+        does_match <- Reduce(combine_fn, list(has_outcome, has_exposure, has_adjustment))
+        if (drop)
+            !does_match
+        else
+            does_match
+    }, models)
+}
