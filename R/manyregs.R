@@ -212,12 +212,12 @@ summarize_non_fitted_models <- function(models) {
 #'
 #' @param x Categorical variable to tabulate
 #' @param label Label to use for categorical variable
-#' @param digits Number of decimal digits to use in "%" column
+#' @param digits Number of decimal digits to use in "\%" column
 #' @return A data frame with columns "variable", "category", "N", "n",
-#'     "%", where "variable" is the name of the variable, "category"
+#'     "\%", where "variable" is the name of the variable, "category"
 #'     is the level of the variable, "N" is the total number of
 #'     observations for the variable, "n" is the number of
-#'     observations per category of the variables, and "%" is the
+#'     observations per category of the variables, and "\%" is the
 #'     percentage of observations that fall into a given category.
 #'
 #' @export
@@ -239,14 +239,14 @@ freq <- function(x, label = NULL, digits = 2L) {
 #'
 #' @param columns_names Columns names of categorical variables
 #' @param data Data frame containing categorical variables
-#' @param digits Number of decimal digits to use for "%" column
+#' @param digits Number of decimal digits to use for "\%" column
 #' @return A data frame with columns "variable", "category", "N", "n",
-#'     "%".  The "variable" column contains the column names of the
+#'     "\%".  The "variable" column contains the column names of the
 #'     categorical variables from `data`.  The "category" column
 #'     contains the levels of the variables.  The "N" column contains
 #'     the total number of observations per variable.  The "n" column
 #'     contains the number of observations per category of each
-#'     variable.  The "%" column contains the percentage of
+#'     variable.  The "\%" column contains the percentage of
 #'     observations that fall into a given category.
 #'
 #' @export

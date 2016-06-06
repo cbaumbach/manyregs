@@ -9,18 +9,18 @@ freqs(column_names, data, digits = 2L)
 \arguments{
 \item{data}{Data frame containing categorical variables}
 
-\item{digits}{Number of decimal digits to use for "%" column}
+\item{digits}{Number of decimal digits to use for "\%" column}
 
 \item{columns_names}{Columns names of categorical variables}
 }
 \value{
 A data frame with columns "variable", "category", "N", "n",
-    "%".  The "variable" column contains the column names of the
+    "\%".  The "variable" column contains the column names of the
     categorical variables from `data`.  The "category" column
     contains the levels of the variables.  The "N" column contains
     the total number of observations per variable.  The "n" column
     contains the number of observations per category of each
-    variable.  The "%" column contains the percentage of
+    variable.  The "\%" column contains the percentage of
     observations that fall into a given category.
 }
 \description{
