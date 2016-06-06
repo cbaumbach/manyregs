@@ -195,7 +195,7 @@ find_estimates <- function(fit) {
     d <- data.frame(variable = rownames(x),
         beta = x[, 1], se = x[, 2], pvalue = x[, 4],
         stringsAsFactors = FALSE)
-    ci <- confint(fit)
+    suppressMessages(ci <- confint(fit))
     d$lcl <- ci[, 1]
     d$ucl <- ci[, 2]
     d
