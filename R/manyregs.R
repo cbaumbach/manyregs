@@ -472,3 +472,32 @@ find_margin_plots <- function(nrow, ncol, byrow = FALSE) {
     m <- matrix(seq_len(nrow * ncol), nrow = nrow, byrow = byrow)
     list(bottom = m[nrow,], left = m[,1], top = m[1,], right = m[,ncol])
 }
+
+#' Find outcomes, exposures, adjustments from a list of models
+#'
+#' @param models List of model objects
+#' @param outcomes Character vector of names of outcome variables
+#' @param exposures Character vector of names of exposures variables
+#' @param adjustments List with character vectors of names of
+#'     adjustments variables
+#' @return A list with elements "outcomes", "exposures", and
+#'     "adjustments".  If the argument of the same name as the element
+#'     is non-NULL, the value of the element will be the same as that
+#'     of the argument.  Otherwise the list element contains the
+#'     unique values of its "type" that are found in the `models`,
+#'     e.g., the element named "outcomes" will contain a character
+#'     vector of the unique outcomes that are found in the list of
+#'     models.
+#'
+find_variables <- function(models, outcomes = NULL, exposures = NULL, adjustments = NULL) {
+    unique_list <- function(x) {
+        x[!duplicated(x)]
+    }
+    if (is.null(outcomes))
+        outcomes <- unique(vapply(models, `[[`, character(1), "outcome"))
+    if (is.null(exposures))
+        exposures <- unique(vapply(models, `[[`, character(1), "exposure"))
+    if (is.null(adjustments))
+        adjustments <- unique_list(lapply(models, `[[`, "adjustment"))
+    list(outcomes = outcomes, exposures = exposures, adjustments = adjustments)
+}
