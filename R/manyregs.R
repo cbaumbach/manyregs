@@ -457,3 +457,18 @@ find_layout <- function(nrow, ncol) {
     heights <- c(margin_width, rep_len(plot_width, nrow), margin_width)
     list(mat = mat, widths = widths, heights = heights)
 }
+
+#' Find the numbers of plots at the margins
+#'
+#' @param nrow Number of rows
+#' @param ncol Number of columns
+#' @param byrow If FALSE (default) subplots are filled by columns,
+#'     otherwise by rows.
+#' @return A list with elements "bottom", "left", "top", and "right".
+#'     Every element contains the numbers of the plots at the
+#'     corresponding margin.
+#'
+find_margin_plots <- function(nrow, ncol, byrow = FALSE) {
+    m <- matrix(seq_len(nrow * ncol), nrow = nrow, byrow = byrow)
+    list(bottom = m[nrow,], left = m[,1], top = m[1,], right = m[,ncol])
+}
