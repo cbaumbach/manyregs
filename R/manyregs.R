@@ -501,3 +501,26 @@ find_variables <- function(models, outcomes = NULL, exposures = NULL, adjustment
         adjustments <- unique_list(lapply(models, `[[`, "adjustment"))
     list(outcomes = outcomes, exposures = exposures, adjustments = adjustments)
 }
+
+#' Match values of variables to different parts of a layout
+#'
+#' @param variables List with the same structure as the return value
+#'     of \code{\link{find_variables}}.
+#' @param rows One of "outcomes", "exposures", "adjustments" but not
+#'     the same as `columns`
+#' @param columns One of "outcomes", "exposures", "adjustments" but
+#'     not the same as `rows`
+#' @return The layout consists of pages, rows, and columns.  Every
+#'     part of the layout represents one type of variable: outcomes,
+#'     exposures, adjustments.  The function takes the values of the
+#'     different types of variables (`variables`) as well as the
+#'     correspondence between parts of the layout and the types of
+#'     variables (`rows` and `columns`) and returns a list with
+#'     elements "page", "row", "column" where every element contains
+#'     the values of the type of variable that matches the
+#'     corresponding part of the layout.
+#'
+find_page_row_column_values <- function(variables, rows, columns) {
+    pages <- setdiff(names(variables), c(rows, columns))
+    list(page = variables[[pages]], row = variables[[rows]], column = variables[[columns]])
+}
