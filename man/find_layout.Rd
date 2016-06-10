@@ -13,7 +13,10 @@ find_layout(nrow, ncol)
 }
 \value{
 A list with elements "mat", "widths", "heights" that can be
-    used as arguments to \code{\link[graphics]{layout}}.
+    used as arguments to \code{\link[graphics]{layout}}.  There are
+    also elements "bottom", "left", "top", "right" that are integer
+    vectors containing the numbers of the subplots at the bottom,
+    left, top, and right margin, respectively.
 }
 \description{
 Find layout for plots

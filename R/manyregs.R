@@ -445,15 +445,18 @@ filter_models <- function(models, outcomes = NULL, exposures = NULL,
 #' @param nrow Number of rows
 #' @param ncol Number of columns
 #' @return A list with elements "mat", "widths", "heights" that can be
-#'     used as arguments to \code{\link[graphics]{layout}}.
+#'     used as arguments to \code{\link[graphics]{layout}}.  There are
+#'     also elements "bottom", "left", "top", "right" that are integer
+#'     vectors containing the numbers of the subplots at the bottom,
+#'     left, top, and right margin, respectively.
 #'
 find_layout <- function(nrow, ncol) {
-    mat <- rbind(rep(0, 2 + ncol),
-        cbind(rep(0, nrow), matrix(seq_len(nrow * ncol), ncol = ncol, byrow = TRUE), rep(0, nrow)),
-        rep(0, 2 + ncol))
+    m <- matrix(seq_len(nrow * ncol), nrow = nrow, byrow = TRUE)
+    mat <- cbind(0, rbind(0, m, 0), 0)
     widths <- c(margin_width(), rep_len(plot_width(), ncol), margin_width())
     heights <- c(margin_width(), rep_len(plot_width(), nrow), margin_width())
-    list(mat = mat, widths = widths, heights = heights)
+    list(mat = mat, widths = widths, heights = heights,
+        bottom = m[nrow,], left = m[,1], top = m[1,], right = m[,ncol])
 }
 
 margin_width <- function() {
