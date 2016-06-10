@@ -4,17 +4,15 @@
 \alias{find_page_row_column_values}
 \title{Match values of variables to different parts of a layout}
 \usage{
-find_page_row_column_values(variables, rows, columns)
+find_page_row_column_values(variables, types)
 }
 \arguments{
 \item{variables}{List with the same structure as the return value
 of \code{\link{find_variables}}.}
 
-\item{rows}{One of "outcomes", "exposures", "adjustments" but not
-the same as `columns`}
-
-\item{columns}{One of "outcomes", "exposures", "adjustments" but
-not the same as `rows`}
+\item{types}{Character vector with named elements "pages", "rows",
+"columns" where every element is one of "outcomes",
+"exposures", "adjustments" and no two elements are the same.}
 }
 \value{
 The layout consists of pages, rows, and columns.  Every
@@ -22,10 +20,10 @@ The layout consists of pages, rows, and columns.  Every
     exposures, adjustments.  The function takes the values of the
     different types of variables (`variables`) as well as the
     correspondence between parts of the layout and the types of
-    variables (`rows` and `columns`) and returns a list with
-    elements "page", "row", "column" where every element contains
-    the values of the type of variable that matches the
-    corresponding part of the layout.
+    variables (`types`) and returns a list with elements "page",
+    "row", "column" where every element contains the values of the
+    type of variable that matches the corresponding part of the
+    layout.
 }
 \description{
 Match values of variables to different parts of a layout
