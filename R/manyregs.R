@@ -448,14 +448,20 @@ filter_models <- function(models, outcomes = NULL, exposures = NULL,
 #'     used as arguments to \code{\link[graphics]{layout}}.
 #'
 find_layout <- function(nrow, ncol) {
-    margin_width <- lcm(.5)
-    plot_width <- lcm(3)
     mat <- rbind(rep(0, 2 + ncol),
         cbind(rep(0, nrow), matrix(seq_len(nrow * ncol), ncol = ncol, byrow = TRUE), rep(0, nrow)),
         rep(0, 2 + ncol))
-    widths <- c(margin_width, rep_len(plot_width, ncol), margin_width)
-    heights <- c(margin_width, rep_len(plot_width, nrow), margin_width)
+    widths <- c(margin_width(), rep_len(plot_width(), ncol), margin_width())
+    heights <- c(margin_width(), rep_len(plot_width(), nrow), margin_width())
     list(mat = mat, widths = widths, heights = heights)
+}
+
+margin_width <- function() {
+    lcm(.5)
+}
+
+plot_width <- function() {
+    lcm(3)
 }
 
 #' Find the numbers of plots at the margins
