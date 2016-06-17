@@ -207,7 +207,7 @@ find_estimates <- function(fit) {
 #' @return A data frame containing the printed representation of the
 #'     models.
 summarize_non_fitted_models <- function(models) {
-    data.frame(models = vapply(models, as.character, character(1L)),
+    data.frame(model = vapply(models, as.character, character(1L)),
         stringsAsFactors = FALSE)
 }
 
