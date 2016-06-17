@@ -190,6 +190,16 @@ summarize_fitted_models <- function(models) {
     }))
 }
 
+#' Extract estimates from fitted model
+#'
+#' @param fit Fitted model
+#' @return A data frame with columns "beta", "se", "pvalue", "lcl",
+#'     and "ucl" denoting the effect estimate, its standard error, the
+#'     p-value, and the lower and upper 95\% confidence limits.
+#'
+#'     Note that the confidence limits are based on the assumption of
+#'     asymptotic normality of the effect estimates.  This assumption
+#'     might be violated in small samples.
 find_estimates <- function(fit) {
     x <- coef(summary(fit))
     d <- data.frame(variable = rownames(x),
