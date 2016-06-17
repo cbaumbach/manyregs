@@ -3,4 +3,27 @@
 #' The manyregs package provides a concise and yet flexible way to
 #' specify, fit, and summarize potentially large numbers of regression
 #' models.
+#'
+#' @examples
+#' N <- 100L
+#' data <- data.frame(
+#'     y1 = as.integer(cut(rnorm(N), 2)) - 1L,
+#'     y2 = as.integer(cut(rnorm(N), 2)) - 1L,
+#'     x1 = as.integer(cut(rnorm(N), 2)) - 1L,
+#'     x2 = as.integer(cut(rnorm(N), 3)),
+#'     x3 = rnorm(N),
+#'     z1 = as.integer(cut(rnorm(N), 3)),
+#'     z2 = rnorm(N))
+#'
+#' outcomes <- c("y1", "y2")
+#' exposures <- c("x1", "x2", "x3")
+#' adjustments <- list("z1", c("z1", "z2"))
+#'
+#' logistic <- function(model, data) {
+#'     with(data, glm(as.formula(model), family = "binomial"))
+#' }
+#'
+#' models <- create_models(outcomes, exposures, adjustments, logistic)
+#' fitted_models <- fit_models(models, data)
+#' summarized_models <- summarize_models(fitted_models)
 "_PACKAGE"
