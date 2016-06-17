@@ -10,7 +10,28 @@ summarize_models(models)
 \item{models}{Models to be summarized}
 }
 \value{
-foobar
+The result depends on whether all models are fitted or not.
+    If at least one of the models is not fitted, a data frame with
+    a single column "model" will be returned that contains a
+    character representations of every model in \code{models}.  If
+    all models are fitted, a data frame with the following columns
+    is returned:
+
+\itemize{
+  \item outcome: Name of outcome variable
+  \item variable: Name of covariate
+  \item nobs: Number of observations
+  \item beta: Effect estimate
+  \item se: Standard error of effect estimate
+  \item lcl: Lower 95\% confidence limit for effect estimate
+  \item ucl: Upper 95\% confidence limit for effect estimate
+  \item pvalue: P-Value
+  \item model: Character representation of statistical model
+}
+
+    Note that confidence limits are based on the assumption of
+    asymptotic normality of the effect estimates.  This assumption
+    might be violated in small samples.
 }
 \description{
 Summarize a list of models.
