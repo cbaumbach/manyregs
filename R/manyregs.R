@@ -223,14 +223,21 @@ summarize_fitted_models <- function(models) {
 #'     asymptotic normality of the effect estimates.  This assumption
 #'     might be violated in small samples.
 find_estimates <- function(fit) {
-    x <- coef(summary(fit))
-    d <- data.frame(variable = rownames(x),
-        beta = x[, 1], se = x[, 2], pvalue = x[, 4],
+    beta <- coef(fit)
+    se <- sqrt(diag(vcov(fit)))
+    ci <- confint.default(fit)
+    pvalue <- find_pvalue(coef(summary(fit)))
+    variable <- names(beta)
+    data.frame(variable, beta, se, pvalue, lcl = ci[,1], ucl = ci[,2],
         stringsAsFactors = FALSE)
-    suppressMessages(ci <- confint(fit))
-    d$lcl <- ci[, 1]
-    d$ucl <- ci[, 2]
-    d
+}
+
+find_pvalue <- function(x) {
+    pvalue_column <- grep("^Pr\\(.*\\)$", colnames(x))
+    if (length(pvalue_column) == 1)
+        x[, pvalue_column]
+    else
+        rep_len(NA, nrow(x))
 }
 
 #' Summarize a list of non-fitted models.

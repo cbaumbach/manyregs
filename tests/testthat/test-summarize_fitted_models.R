@@ -49,8 +49,8 @@ test_that("se", {
 })
 
 test_that("lower and upper confidence limits", {
-    ci_y1 <- unname(confint(expected_fit_y1))
-    ci_y2 <- unname(confint(expected_fit_y2))
+    ci_y1 <- unname(confint.default(expected_fit_y1))
+    ci_y2 <- unname(confint.default(expected_fit_y2))
     expect_equal(actual_summary$lcl, c(ci_y1[, 1], ci_y2[, 1]))
     expect_equal(actual_summary$ucl, c(ci_y1[, 2], ci_y2[, 2]))
 })
