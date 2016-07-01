@@ -522,16 +522,32 @@ plot_width <- function() {
 #'     models.
 #'
 find_variables <- function(models, outcomes = NULL, exposures = NULL, adjustments = NULL) {
+    if (is.null(outcomes))
+        outcomes <- find_outcomes(models)
+    if (is.null(exposures))
+        exposures <- find_exposures(models)
+    if (is.null(adjustments))
+        adjustments <- find_adjustments(models)
+    list(outcomes = outcomes, exposures = exposures, adjustments = adjustments)
+}
+
+find_outcomes <- function(models) {
+    find_outcomes_or_exposures(models, "outcome")
+}
+
+find_exposures <- function(models) {
+    find_outcomes_or_exposures(models, "exposure")
+}
+
+find_outcomes_or_exposures <- function(models, type) {
+    unique(vapply(models, `[[`, character(1), type))
+}
+
+find_adjustments <- function(models) {
     unique_list <- function(x) {
         x[!duplicated(x)]
     }
-    if (is.null(outcomes))
-        outcomes <- unique(vapply(models, `[[`, character(1), "outcome"))
-    if (is.null(exposures))
-        exposures <- unique(vapply(models, `[[`, character(1), "exposure"))
-    if (is.null(adjustments))
-        adjustments <- unique_list(lapply(models, `[[`, "adjustment"))
-    list(outcomes = outcomes, exposures = exposures, adjustments = adjustments)
+    unique_list(lapply(models, `[[`, "adjustment"))
 }
 
 #' Match values of variables to different parts of a layout

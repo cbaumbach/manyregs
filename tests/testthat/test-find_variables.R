@@ -18,3 +18,15 @@ test_that("with arguments", {
     expected <- list(outcomes = "y1", exposures = "x2", adjustments = list(c("z1", "z2")))
     expect_equal(actual, expected)
 })
+
+test_that("find_outcomes", {
+    expect_equal(find_outcomes(test_models), outcomes)
+})
+
+test_that("find_exposures", {
+    expect_equal(find_exposures(test_models), exposures)
+})
+
+test_that("find_adjustments", {
+    expect_equal(find_adjustments(test_models), adjustments)
+})
