@@ -571,7 +571,7 @@ adjustment_to_string <- function(adjustments) {
 }
 
 #' String used in character representation of a list of adjustments
-adjustment_separator <- " + "
+adjustment_separator <- covariate_separator
 
 #' Convert character representation of a list of adjustments to list
 #'
