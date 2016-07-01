@@ -77,13 +77,12 @@ as.character.manyregs_model <- function(x, ...) {
 #' @param x Model to be converted
 #' @return Formula-like character string representing the model.
 model_to_formula_string <- function(x) {
-    if (is.null(x$adjustment)) {
-        sprintf("%s ~ %s", x$outcome, x$exposure)
-    } else {
-        adjustment <- paste(x$adjustment, collapse = " + ")
-        sprintf("%s ~ %s + %s", x$outcome, x$exposure, adjustment)
-    }
+    covariates <- paste(c(x$exposure, x$adjustment), collapse = covariate_separator)
+    sprintf("%s ~ %s", x$outcome, covariates)
 }
+
+#' String separating names of covariates in formula string.
+covariate_separator <- " + "
 
 #' Print model.
 #'
@@ -572,7 +571,7 @@ adjustment_to_string <- function(adjustments) {
 }
 
 #' String used in character representation of a list of adjustments
-adjustment_separator <- " +++ "
+adjustment_separator <- " + "
 
 #' Convert character representation of a list of adjustments to list
 #'
