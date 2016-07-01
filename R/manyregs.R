@@ -11,7 +11,7 @@
 #' @export
 create_models <- function(outcomes, exposures, adjustments = NULL, f) {
     models <- NULL
-    if (is.null(adjustments))
+    if (is.null(adjustments) || !is.list(adjustments))
         adjustments <- list(adjustments)
     fname <- deparse(substitute(f))
     for (o in outcomes) {

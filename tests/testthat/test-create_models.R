@@ -23,6 +23,12 @@ test_that("1 outcome, 1 exposure, 1 adjustment", {
     expect_true(has_model_with(models, "y", "x", c("z1", "z2"), foo, "foo"))
 })
 
+test_that("a single adjustment can be specified as character vector", {
+    models <- create_models("y", "x", c("z1", "z2"), foo)
+    expect_equal(1, length(models))
+    expect_true(has_model_with(models, "y", "x", c("z1", "z2"), foo, "foo"))
+})
+
 test_that("2 outcomes, 2 exposures, 2 adjustment", {
     models <- create_models(c("y-1", "y-2"), c("x-1", "x-2"), list("z-1", "z-2"), foo)
     expect_equal(8, length(models))
