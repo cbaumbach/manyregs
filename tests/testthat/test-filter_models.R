@@ -35,3 +35,9 @@ test_that("`combine` must be of length 1", {
     expect_error(filter_models(test_models, combine = c("and", "or")),
         "`combine` must be of length 1")
 })
+
+test_that("a single adjustment can be specified as a character vector", {
+    actual <- filter_models(test_models, "y2", "x1", c("z1", "z2"))
+    expected <- create_models("y2", "x1", list(c("z1", "z2")), f)
+    expect_equal(actual, expected)
+})

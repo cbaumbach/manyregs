@@ -461,15 +461,21 @@ filter_models <- function(models, outcomes = NULL, exposures = NULL,
         stop("`combine` must be of length 1")
     if (! combine %in% c("and", "or"))
         stop("`combine` must be one of \"and\" or \"or\": \"", combine, "\"")
-    combine_fn <- switch(combine, and = `&&`, or = `||`, `&&`)
+    combine_fn <- switch(combine, and = `&&`, or = `||`)
+    if (is.null(outcomes))
+        outcomes <- find_outcomes(models)
+    if (is.null(exposures))
+        exposures <- find_exposures(models)
+    if (is.null(adjustments))
+        adjustments <- find_adjustments(models)
+    if (!is.list(adjustments))
+        adjustments <- list(adjustments)
     Filter(function(model) {
-        has_outcome <- if (is.null(outcomes)) TRUE else model$outcome %in% outcomes
-        has_exposure <- if (is.null(exposures)) TRUE else model$exposure %in% exposures
-        has_adjustment <- if (is.null(adjustments)) TRUE else {
-            Position(function(adjustment) {
-                identical(adjustment, model$adjustment)
-            }, adjustments, nomatch = 0L) != 0L
-        }
+        has_outcome <- model$outcome %in% outcomes
+        has_exposure <- model$exposure %in% exposures
+        has_adjustment <- Position(function(adjustment) {
+            identical(adjustment, model$adjustment)
+        }, adjustments, nomatch = 0L) != 0L
         does_match <- Reduce(combine_fn, list(has_outcome, has_exposure, has_adjustment))
         if (drop)
             !does_match
