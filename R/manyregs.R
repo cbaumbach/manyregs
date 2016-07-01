@@ -555,3 +555,37 @@ find_variables <- function(models, outcomes = NULL, exposures = NULL, adjustment
 find_page_row_column_values <- function(variables, types) {
     setNames(variables[types], names(types))
 }
+
+#' Convert a list of adjustment variables to a character vector
+#'
+#' @param adjustments List of character vectors with names of
+#'     adjustment variables
+#' @return A character vector representing the list of adjustments.
+#'
+adjustment_to_string <- function(adjustments) {
+    vapply(adjustments, function(xs) {
+        if (is.null(xs))
+            "NULL"
+        else
+            paste(xs, collapse = adjustment_separator)
+    }, character(1))
+}
+
+#' String used in character representation of a list of adjustments
+adjustment_separator <- " +++ "
+
+#' Convert character representation of a list of adjustments to list
+#'
+#' @param adjustment_string A character vector representing the list
+#'     of adjustments
+#' @return A list of character vectors with names of adjustment
+#'     variables
+adjustment_from_string <- function(adjustment_string) {
+    xs <- strsplit(adjustment_string, adjustment_separator, fixed = TRUE)
+    lapply(xs, function(x) {
+        if (identical(x, "NULL"))
+            NULL
+        else
+            x
+    })
+}
