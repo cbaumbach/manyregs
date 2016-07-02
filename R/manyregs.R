@@ -585,6 +585,8 @@ find_page_row_column_values <- function(variables, types) {
 #' @return A character vector representing the list of adjustments.
 #'
 adjustment_to_string <- function(adjustments) {
+    if (is.null(adjustments))
+        adjustments <- list(NULL)
     vapply(adjustments, function(xs) {
         if (is.null(xs))
             "NULL"

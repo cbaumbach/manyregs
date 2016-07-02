@@ -10,3 +10,7 @@ test_that("adjustment_to_string", {
 test_that("adjustment_from_string", {
     expect_equal(adjustments, adjustment_from_string(adjustment_string))
 })
+
+test_that("NULL is converted to \"NULL\"", {
+    expect_equal("NULL", adjustment_to_string(NULL))
+})
