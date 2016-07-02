@@ -578,6 +578,40 @@ find_page_row_column_values <- function(variables, types) {
     setNames(variables[types], names(types))
 }
 
+#' Find all combination of outcomes, exposures, and adjustments
+#'
+#' @param outcomes Character vector of outcome variable names
+#' @param exposures Character vector of exposures variable names
+#' @param adjustments List of character vectors with adjustment
+#'     variable names
+#' @param by Character vector defining how ties are broken
+#' @return List with sublists "outcomes", "exposures", "adjustments"
+#'     of equal length.  Each triplet of corresponding elements of the
+#'     three sublists forms a possible outcome-exposure-adjustment
+#'     combination.
+#'
+find_combinations <- function(outcomes = NULL, exposures = NULL, adjustments = NULL, by = NULL) {
+    if (is.null(by))
+        by <- c("outcomes", "exposures", "adjustments")
+    if (is.null(Find(Negate(is.null), list(outcomes, exposures, adjustments))))
+        return(list(outcomes = list(), exposures = list(), adjustments = list()))
+    if (is.null(outcomes))
+        outcomes <- list(NULL)
+    if (is.null(exposures))
+        exposures <- list(NULL)
+    find_combinations_helper(outcomes, exposures, adjustments, by)
+}
+
+find_combinations_helper <- function(outcomes, exposures, adjustments, by) {
+    by2 <- sub("^(adjustments)$", "adjustment_to_string(\\1)", by)
+    combinations <- lapply(setNames(eval(parse(text = sprintf(
+        "expand.grid(%s, stringsAsFactors = FALSE)",
+        paste(rev(by2), collapse = ", ")))), rev(by)), as.list)
+    combinations$adjustments <- adjustment_from_string(
+        unlist(combinations$adjustments, use.names = FALSE))
+    combinations[c("outcomes", "exposures", "adjustments")]
+}
+
 #' Convert a list of adjustment variables to a character vector
 #'
 #' @param adjustments List of character vectors with names of
