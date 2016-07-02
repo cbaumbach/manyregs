@@ -462,31 +462,34 @@ filter_models <- function(models, outcomes = NULL, exposures = NULL,
     if (! combine %in% c("and", "or"))
         stop("`combine` must be one of \"and\" or \"or\": \"", combine, "\"")
     combine_fn <- switch(combine, and = `&&`, or = `||`)
-    selected_variables <- list(outcomes = outcomes,
-        exposures = exposures, adjustments = adjustments)
+    selected_variables <- find_selected_variables(models, outcomes, exposures, adjustments)
     known_variables <- find_variables(models)
     if (contains_unknown_variable(selected_variables, known_variables))
         return(list())
-    if (is.null(outcomes))
-        outcomes <- known_variables$outcomes
-    if (is.null(exposures))
-        exposures <- known_variables$exposures
-    if (is.null(adjustments))
-        adjustments <- known_variables$adjustments
-    if (!is.list(adjustments))
-        adjustments <- list(adjustments)
     Filter(function(model) {
-        has_outcome <- model$outcome %in% outcomes
-        has_exposure <- model$exposure %in% exposures
+        has_outcome <- model$outcome %in% selected_variables$outcomes
+        has_exposure <- model$exposure %in% selected_variables$exposures
         has_adjustment <- Position(function(adjustment) {
             identical(adjustment, model$adjustment)
-        }, adjustments, nomatch = 0L) != 0L
+        }, selected_variables$adjustments, nomatch = 0L) != 0L
         does_match <- Reduce(combine_fn, list(has_outcome, has_exposure, has_adjustment))
         if (drop)
             !does_match
         else
             does_match
     }, models)
+}
+
+find_selected_variables <- function(models, outcomes, exposures, adjustments) {
+    if (is.null(outcomes))
+        outcomes <- find_outcomes(models)
+    if (is.null(exposures))
+        exposures <- find_exposures(models)
+    if (is.null(adjustments))
+        adjustments <- find_adjustments(models)
+    if (!is.list(adjustments))
+        adjustments <- list(adjustments)
+    list(outcomes = outcomes, exposures = exposures, adjustments = adjustments)
 }
 
 contains_unknown_variable <- function(selected_variables, known_variables) {
