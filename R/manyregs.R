@@ -576,6 +576,44 @@ find_page_row_column_values <- function(variables, types) {
     setNames(variables[types], names(types))
 }
 
+#' Sort a list of models
+#'
+#' @param models List of models
+#' @param by Character vector defining how ties are broken
+#' @param outcomes Character vector giving order of outcome variables
+#' @param exposures Character vector giving order of exposure
+#'     variables
+#' @param adjustments List of character vectors giving order of
+#'     adjustments
+#'
+#' @details The \code{by} argument defines the order in which
+#'     outcomes, exposures, and adjustments are use to sort the list
+#'     of models.  For example, if \code{by} is \code{c("outcomes",
+#'     "exposures", "adjustments")}, models are first sorted by
+#'     outcomes.  Any ties are broken by sorting by exposures.  Any
+#'     remaining ties are broken by sorting by adjustments.
+#'
+#'     The sort order within outcomes (exposures, adjustments) is
+#'     defined by the argument of the same name.  By default the sort
+#'     order within outcomes (exposures, adjustments) is defined by
+#'     the order of appearance of outcomes (exposures, adjustments) in
+#'     the list of models.  By specifying only a subset of outcomes
+#'     (exposures, adjustments) it is possible to obtain a sorted
+#'     subset of models.
+#'
+#' @return A list of sorted models.
+#'
+#' @export
+sort_models <- function(models, by, outcomes = NULL, exposures = NULL, adjustments = NULL) {
+    models <- filter_models(models, outcomes, exposures, adjustments)
+    variables <- find_selected_variables(models, outcomes, exposures, adjustments)
+    x <- find_combinations(variables$outcomes, variables$exposures, variables$adjustments, by)
+    extract_model <- function(outcome, exposure, adjustment) {
+        filter_models(models, outcome, exposure, adjustment, combine = "and")[[1]]
+    }
+    Map(extract_model, x$outcomes, x$exposures, x$adjustments)
+}
+
 #' Find all combination of outcomes, exposures, and adjustments
 #'
 #' @param outcomes Character vector of outcome variable names
