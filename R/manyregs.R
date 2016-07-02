@@ -576,6 +576,31 @@ find_page_row_column_variables <- function(variables, types) {
     setNames(variables[types], names(types))
 }
 
+#' Map outcomes, exposures, and adjustments to pages, rows, and columns
+#'
+#' @param rows One of "outcomes", "exposures", or "adjustments"
+#' @param columns One of "outcomes", "exposures", or "adjustments"
+#' @details The \code{rows} and \code{columns} argument must either
+#'     both be NULL or both be non-NULL.  If \code{rows} and
+#'     \code{columns} are non-NULL, they must not have the same value.
+#' @return List with elements "pages", "rows", and "columns".
+#'
+find_pages_rows_columns <- function(rows = NULL, columns = NULL) {
+    if (length(Filter(is.null, list(rows, columns))) == 1L)
+        stop("Arguments \"rows\" and \"columns\" must either both be non-NULL or both be NULL.")
+    if (is.null(rows))
+        rows <- "outcomes"
+    if (is.null(columns))
+        columns <- "exposures"
+    if (identical(rows, columns))
+        stop("Arguments \"rows\" and \"columns\" must not have the same value.")
+    variable_types <- c("outcomes", "exposures", "adjustments")
+    if (!all(c(rows, columns) %in% variable_types))
+        stop("Arguments \"rows\" and \"columns\" must be one of \"outcomes\", \"exposures\", or \"adjustments\".")
+    pages <- setdiff(variable_types, c(rows, columns))
+    list(rows = rows, columns = columns, pages = pages)
+}
+
 #' Sort a list of models
 #'
 #' @param models List of models
