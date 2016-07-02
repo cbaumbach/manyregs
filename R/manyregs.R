@@ -572,7 +572,7 @@ find_adjustments <- function(models) {
 #'     type of variable that matches the corresponding part of the
 #'     layout.
 #'
-find_page_row_column_values <- function(variables, types) {
+find_page_row_column_variables <- function(variables, types) {
     setNames(variables[types], names(types))
 }
 
