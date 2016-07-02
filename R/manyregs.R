@@ -462,12 +462,17 @@ filter_models <- function(models, outcomes = NULL, exposures = NULL,
     if (! combine %in% c("and", "or"))
         stop("`combine` must be one of \"and\" or \"or\": \"", combine, "\"")
     combine_fn <- switch(combine, and = `&&`, or = `||`)
+    selected_variables <- list(outcomes = outcomes,
+        exposures = exposures, adjustments = adjustments)
+    known_variables <- find_variables(models)
+    if (contains_unknown_variable(selected_variables, known_variables))
+        return(list())
     if (is.null(outcomes))
-        outcomes <- find_outcomes(models)
+        outcomes <- known_variables$outcomes
     if (is.null(exposures))
-        exposures <- find_exposures(models)
+        exposures <- known_variables$exposures
     if (is.null(adjustments))
-        adjustments <- find_adjustments(models)
+        adjustments <- known_variables$adjustments
     if (!is.list(adjustments))
         adjustments <- list(adjustments)
     Filter(function(model) {
@@ -482,6 +487,12 @@ filter_models <- function(models, outcomes = NULL, exposures = NULL,
         else
             does_match
     }, models)
+}
+
+contains_unknown_variable <- function(selected_variables, known_variables) {
+    set_of_selected_variables <- unique(unlist(selected_variables, use.names = FALSE))
+    set_of_known_variables <- unique(unlist(known_variables, use.names = FALSE))
+    ! all(set_of_selected_variables %in% set_of_known_variables)
 }
 
 #' Find layout for plots
