@@ -19,8 +19,8 @@ adjustment variables}
 
 \item{drop}{Drop matching models if TRUE (default FALSE)}
 
-\item{combine}{If "and" (default) models must match all of
-`outcomes`, `exposures`, and `adjustments`.  If "or" a single
+\item{combine}{If "and" models must match all of `outcomes`,
+`exposures`, and `adjustments`.  If "or" (default) a single
 match suffices.}
 }
 \value{

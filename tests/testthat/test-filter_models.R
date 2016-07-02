@@ -11,7 +11,7 @@ test_that("keep all models by using an empty filter", {
 })
 
 test_that("keep a subset of models", {
-    actual <- filter_models(test_models, "y1", "x2", list(c("z1", "z2")))
+    actual <- filter_models(test_models, "y1", "x2", list(c("z1", "z2")), combine = "and")
     expected <- create_models("y1", "x2", list(c("z1", "z2")), f)
     expect_equal(actual, expected)
 })
@@ -37,7 +37,7 @@ test_that("`combine` must be of length 1", {
 })
 
 test_that("a single adjustment can be specified as a character vector", {
-    actual <- filter_models(test_models, "y2", "x1", c("z1", "z2"))
+    actual <- filter_models(test_models, "y2", "x1", c("z1", "z2"), combine = "and")
     expected <- create_models("y2", "x1", list(c("z1", "z2")), f)
     expect_equal(actual, expected)
 })

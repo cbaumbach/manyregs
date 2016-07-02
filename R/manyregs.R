@@ -443,8 +443,8 @@ compare_distros <- function(column_names, by, data, digits = 4L) {
 #' @param adjustments List of character vectors with names of
 #'     adjustment variables
 #' @param drop Drop matching models if TRUE (default FALSE)
-#' @param combine If "and" (default) models must match all of
-#'     `outcomes`, `exposures`, and `adjustments`.  If "or" a single
+#' @param combine If "and" models must match all of `outcomes`,
+#'     `exposures`, and `adjustments`.  If "or" (default) a single
 #'     match suffices.
 #' @return A list of models whose outcome, exposure, and adjustment
 #'     match match `outcomes`, `exposures`, and `adjustments`.  The
@@ -456,7 +456,7 @@ filter_models <- function(models, outcomes = NULL, exposures = NULL,
     adjustments = NULL, drop = FALSE, combine = NULL)
 {
     if (is.null(combine))
-        combine <- "and"
+        combine <- "or"
     if (length(combine) != 1L)
         stop("`combine` must be of length 1")
     if (! combine %in% c("and", "or"))
