@@ -4,28 +4,15 @@
 \alias{find_variables}
 \title{Find outcomes, exposures, adjustments from a list of models}
 \usage{
-find_variables(models, outcomes = NULL, exposures = NULL,
-  adjustments = NULL)
+find_variables(models)
 }
 \arguments{
 \item{models}{List of model objects}
-
-\item{outcomes}{Character vector of names of outcome variables}
-
-\item{exposures}{Character vector of names of exposures variables}
-
-\item{adjustments}{List with character vectors of names of
-adjustments variables}
 }
 \value{
 A list with elements "outcomes", "exposures", and
-    "adjustments".  If the argument of the same name as the element
-    is non-NULL, the value of the element will be the same as that
-    of the argument.  Otherwise the list element contains the
-    unique values of its "type" that are found in the `models`,
-    e.g., the element named "outcomes" will contain a character
-    vector of the unique outcomes that are found in the list of
-    models.
+    "adjustments" representing the outcomes, exposures, and
+    adjustments found among the models.
 }
 \description{
 Find outcomes, exposures, adjustments from a list of models

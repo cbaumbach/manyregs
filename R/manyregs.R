@@ -528,27 +528,14 @@ plot_width <- function() {
 #' Find outcomes, exposures, adjustments from a list of models
 #'
 #' @param models List of model objects
-#' @param outcomes Character vector of names of outcome variables
-#' @param exposures Character vector of names of exposures variables
-#' @param adjustments List with character vectors of names of
-#'     adjustments variables
 #' @return A list with elements "outcomes", "exposures", and
-#'     "adjustments".  If the argument of the same name as the element
-#'     is non-NULL, the value of the element will be the same as that
-#'     of the argument.  Otherwise the list element contains the
-#'     unique values of its "type" that are found in the `models`,
-#'     e.g., the element named "outcomes" will contain a character
-#'     vector of the unique outcomes that are found in the list of
-#'     models.
+#'     "adjustments" representing the outcomes, exposures, and
+#'     adjustments found among the models.
 #'
-find_variables <- function(models, outcomes = NULL, exposures = NULL, adjustments = NULL) {
-    if (is.null(outcomes))
-        outcomes <- find_outcomes(models)
-    if (is.null(exposures))
-        exposures <- find_exposures(models)
-    if (is.null(adjustments))
-        adjustments <- find_adjustments(models)
-    list(outcomes = outcomes, exposures = exposures, adjustments = adjustments)
+find_variables <- function(models) {
+    list(outcomes = find_outcomes(models),
+        exposures = find_exposures(models),
+        adjustments = find_adjustments(models))
 }
 
 find_outcomes <- function(models) {
