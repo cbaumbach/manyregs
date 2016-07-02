@@ -4,7 +4,7 @@
 \alias{create_models}
 \title{Create models from ingredients.}
 \usage{
-create_models(outcomes, exposures, adjustments = NULL, f)
+create_models(outcomes, exposures, adjustments = NULL, f, by = NULL)
 }
 \arguments{
 \item{outcomes}{Character vector with names of outcome variables}
@@ -15,6 +15,8 @@ create_models(outcomes, exposures, adjustments = NULL, f)
 variables}
 
 \item{f}{Function for fitting a model to a dataset.}
+
+\item{by}{Character vector defining how ties are broken}
 }
 \value{
 List of models where every model is an object of S3 class

@@ -47,3 +47,16 @@ test_that("1 outcome, 1 exposure, 0 adjustment", {
     expect_equal(1, length(models))
     expect_true(has_model_with(models, "y", "x", NULL, foo, "foo"))
 })
+
+test_that("we can define the order of models", {
+    models <- create_models(c("y-1", "y-2"), c("x-1", "x-2"), list("z-1", "z-2"), foo,
+        by = c("adjustments", "exposures", "outcomes"))
+    expect_equal(models[1], create_models("y-1", "x-1", "z-1", foo))
+    expect_equal(models[2], create_models("y-2", "x-1", "z-1", foo))
+    expect_equal(models[3], create_models("y-1", "x-2", "z-1", foo))
+    expect_equal(models[4], create_models("y-2", "x-2", "z-1", foo))
+    expect_equal(models[5], create_models("y-1", "x-1", "z-2", foo))
+    expect_equal(models[6], create_models("y-2", "x-1", "z-2", foo))
+    expect_equal(models[7], create_models("y-1", "x-2", "z-2", foo))
+    expect_equal(models[8], create_models("y-2", "x-2", "z-2", foo))
+})

@@ -5,23 +5,21 @@
 #' @param adjustments List of character vectors with names of adjustment
 #'     variables
 #' @param f Function for fitting a model to a dataset.
+#' @param by Character vector defining how ties are broken
 #' @return List of models where every model is an object of S3 class
 #'     "manyregs_model".
 #'
 #' @export
-create_models <- function(outcomes, exposures, adjustments = NULL, f) {
-    models <- NULL
+create_models <- function(outcomes, exposures, adjustments = NULL, f, by = NULL) {
+    fname <- deparse(substitute(f))
     if (is.null(adjustments) || !is.list(adjustments))
         adjustments <- list(adjustments)
-    fname <- deparse(substitute(f))
-    for (o in outcomes) {
-        for (e in exposures) {
-            for (a in adjustments) {
-                models <- c(list(new_model(o, e, a, f, fname)), models)
-            }
-        }
-    }
-    rev(models)
+    if (is.null(by))
+        by <- c("outcomes", "exposures", "adjustments")
+    x <- find_combinations(outcomes, exposures, adjustments, by)
+    Map(function(outcome, exposure, adjustment) {
+        new_model(outcome, exposure, adjustment, f, fname)
+    }, x$outcomes, x$exposures, x$adjustments)
 }
 
 #' Create a new model object of S3 class "manyregs_model".
