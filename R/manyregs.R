@@ -182,24 +182,32 @@ summarize_models <- function(models) {
 #'
 #' @export
 summary.manyregs_model <- function(object, ...) {
-    if ("fit" %in% names(object)) {
-        x <- find_estimates(object$fit)
-        data.frame(
-            outcome = object$outcome,
-            variable = x$variable,
-            nobs = nobs(object$fit),
-            beta = x$beta,
-            se = x$se,
-            lcl = x$lcl,
-            ucl = x$ucl,
-            pvalue = x$pvalue,
-            model = as.character(object),
-            stringsAsFactors = FALSE)
-    } else {
-        data.frame(model = as.character(object),
-            stringsAsFactors = FALSE)
-    }
+    if ("fit" %in% names(object))
+        summarize_fitted_model(object)
+    else
+        summarize_non_fitted_model(object)
 }
+
+summarize_fitted_model <- function(model) {
+    x <- find_estimates(model$fit)
+    data.frame(
+        outcome = model$outcome,
+        variable = x$variable,
+        nobs = nobs(model$fit),
+        beta = x$beta,
+        se = x$se,
+        lcl = x$lcl,
+        ucl = x$ucl,
+        pvalue = x$pvalue,
+        model = as.character(model),
+        stringsAsFactors = FALSE)
+}
+
+summarize_non_fitted_model <- function(model) {
+    data.frame(model = as.character(model),
+        stringsAsFactors = FALSE)
+}
+
 
 #' Extract estimates from fitted model
 #'
