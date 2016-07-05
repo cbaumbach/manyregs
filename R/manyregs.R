@@ -708,3 +708,17 @@ adjustment_from_string <- function(adjustment_string) {
             x
     })
 }
+
+#' Sort models for plotting in a layout of pages, rows, and columns
+#'
+#' @param models List of models
+#' @param rows One of "outcomes", "exposures", or "adjustments"
+#' @param columns One of "outcomes", "exposures", or "adjustments"
+#' @details The \code{rows} and \code{columns} arguments must not have
+#'     the same value.
+#' @return A list of models sorted such that we can step through the
+#'     list plotting one model after the other and every model will
+#'     appear on the correct page in the correct row and column.
+sort_models_for_plotting <- function(models, rows = NULL, columns = NULL) {
+    sort_models(models, find_pages_rows_columns(rows, columns))
+}
