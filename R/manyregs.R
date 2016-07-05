@@ -598,7 +598,7 @@ find_pages_rows_columns <- function(rows = NULL, columns = NULL) {
     if (!all(c(rows, columns) %in% variable_types))
         stop("Arguments \"rows\" and \"columns\" must be one of \"outcomes\", \"exposures\", or \"adjustments\".")
     pages <- setdiff(variable_types, c(rows, columns))
-    list(rows = rows, columns = columns, pages = pages)
+    list(pages = pages, rows = rows, columns = columns)
 }
 
 #' Sort a list of models
