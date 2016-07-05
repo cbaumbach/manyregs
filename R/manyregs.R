@@ -178,6 +178,33 @@ summarize_models <- function(models) {
     }
 }
 
+#' Summarize model.
+#'
+#' @param object Model to be summarized
+#' @param \dots Ignored
+#' @return A data frame summarizing the model.
+#'
+#' @export
+summary.manyregs_model <- function(object, ...) {
+    if ("fit" %in% names(object)) {
+        x <- find_estimates(object$fit)
+        data.frame(
+            outcome = object$outcome,
+            variable = x$variable,
+            nobs = nobs(object$fit),
+            beta = x$beta,
+            se = x$se,
+            lcl = x$lcl,
+            ucl = x$ucl,
+            pvalue = x$pvalue,
+            model = as.character(object),
+            stringsAsFactors = FALSE)
+    } else {
+        data.frame(model = as.character(object),
+            stringsAsFactors = FALSE)
+    }
+}
+
 #' Are models fitted?
 #'
 #' @param models List of models
