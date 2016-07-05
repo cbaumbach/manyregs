@@ -171,11 +171,7 @@ remove_slots <- function(model, slots) {
 #'
 #' @export
 summarize_models <- function(models) {
-    if (all(is_fitted(models))) {
-        summarize_fitted_models(models)
-    } else {
-        summarize_non_fitted_models(models)
-    }
+    do.call(rbind, lapply(models, summary))
 }
 
 #' Summarize model.
@@ -205,37 +201,6 @@ summary.manyregs_model <- function(object, ...) {
     }
 }
 
-#' Are models fitted?
-#'
-#' @param models List of models
-#' @return TRUE for fitted models, FALSE for non-fitted models.
-is_fitted <- function(models) {
-    vapply(models, function(m) {
-        "fit" %in% names(m)
-    }, logical(1L), USE.NAMES = FALSE)
-}
-
-#' Summarize a list of fitted models.
-#'
-#' @param models List of models
-#' @return A single data frame summarizing the fitted models.
-summarize_fitted_models <- function(models) {
-    do.call(rbind, lapply(models, function(m) {
-        x <- find_estimates(m$fit)
-        data.frame(
-            outcome = m$outcome,
-            variable = x$variable,
-            nobs = nobs(m$fit),
-            beta = x$beta,
-            se = x$se,
-            lcl = x$lcl,
-            ucl = x$ucl,
-            pvalue = x$pvalue,
-            model = as.character(m),
-            stringsAsFactors = FALSE)
-    }))
-}
-
 #' Extract estimates from fitted model
 #'
 #' @param fit Fitted model
@@ -262,16 +227,6 @@ find_pvalue <- function(x) {
         x[, pvalue_column]
     else
         rep_len(NA, nrow(x))
-}
-
-#' Summarize a list of non-fitted models.
-#'
-#' @param models List of models
-#' @return A data frame containing the printed representation of the
-#'     models.
-summarize_non_fitted_models <- function(models) {
-    data.frame(model = vapply(models, as.character, character(1L)),
-        stringsAsFactors = FALSE)
 }
 
 #' Tabulate a categorical variable.
