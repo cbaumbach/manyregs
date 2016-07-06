@@ -742,3 +742,14 @@ find_plot_labels <- function(model, rows, columns) {
 is_categorical <- function(variable, model) {
     ! variable %in% summary(model)$variable
 }
+
+#' Escape characters from character class
+#'
+#' @param x Character vector in which to escape characters
+#' @param character_class Length-1 character vector defining a
+#'     "character class" (see \code{\link[base]{regex}})
+#' @return Character vector \code{x} in which the characters in
+#'     \code{character_class} are escaped.
+escape_characters <- function(x, character_class) {
+    gsub(paste0("(", character_class, ")"), "\\\\\\1", x)
+}
