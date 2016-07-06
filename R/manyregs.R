@@ -498,7 +498,7 @@ contains_unknown_variable <- function(selected_variables, known_variables) {
 #'
 find_layout <- function(nrow, ncol) {
     m <- matrix(seq_len(nrow * ncol), nrow = nrow, byrow = TRUE)
-    mat <- cbind(0, rbind(0, m, 0), 0)
+    mat <- cbind(0, rbind(0, m), 0)
     widths <- c(margin_width(), rep_len(plot_width(), ncol), margin_width())
     heights <- c(margin_width(), rep_len(plot_width(), nrow), margin_width())
     list(mat = mat, widths = widths, heights = heights,
