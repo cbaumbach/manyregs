@@ -321,8 +321,6 @@ cm_to_inches <- function(x) {
 #'     where subplots in rows correspond to different outcomes and
 #'     subplots in columns correspond to different exposures.
 #' @return None.
-#'
-#' @export
 plot_models <- function(models, rows = "outcomes", columns = "exposures")
 {
     layout_info <- find_layout_info(models, rows, columns)
