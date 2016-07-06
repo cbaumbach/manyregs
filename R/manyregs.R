@@ -712,3 +712,22 @@ adjustment_from_string <- function(adjustment_string) {
 sort_models_for_plotting <- function(models, rows = NULL, columns = NULL) {
     sort_models(models, find_pages_rows_columns(rows, columns))
 }
+
+#' Find row, column, and page labels for model
+#'
+#' @param model A model object
+#' @param rows One of "outcomes", "exposures", or "adjustments"
+#' @param columns One of "outcomes", "exposures", or "adjustments"
+#' @return A list with elements "row", "column", and "page" containing
+#'     the row, column, and page labels for the model.
+find_plot_labels <- function(model, rows, columns) {
+    x <- find_pages_rows_columns(rows, columns)
+    find_label_for <- function(dimension) {
+        paste(model[[switch(dimension, outcomes = "outcome",
+            exposures = "exposure", adjustments = "adjustment")]],
+            collapse = ", ")
+    }
+    list(row = find_label_for(x$rows),
+        column = find_label_for(x$columns),
+        page = sprintf("%s: %s", sub("s$", "", x$pages), find_label_for(x$pages)))
+}
