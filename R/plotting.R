@@ -25,19 +25,6 @@ plot_width <- function() {
     lcm(3)
 }
 
-#' Convenience wrapper around \code{find_layout}
-#'
-#' @param models A list of models
-#' @param rows One of "outcomes", "exposures", or "adjustments"
-#' @param columns One of "outcomes", "exposures", or "adjustments"
-#' @return A list as returned by \code{\link{find_layout}}.
-find_layout_info <- function(models, rows, columns) {
-    find_number_of <- function(dimension) {
-        length(eval(parse(text = sprintf("find_%s(models)", dimension))))
-    }
-    find_layout(find_number_of(rows), find_number_of(columns))
-}
-
 #' Find outcomes, exposures, adjustments from a list of models
 #'
 #' @param models List of model objects
@@ -287,7 +274,7 @@ find_position_in_layout <- function(model_number, layout_info) {
 #'     \code{\link[grDevices]{jpeg}}.  Note that you need to specify
 #'     \code{units = "in"} when using \code{\link[grDevices]{jpeg}}.
 find_device_dimensions <- function(models, rows = "outcomes", columns = "exposures") {
-    layout_info <- find_layout_info(models, rows, columns)
+    layout_info <- find_layout(find_number_of(rows, models), find_number_of(columns, models))
     width_in_cm <- sum(cm_to_double(layout_info$widths))
     height_in_cm <- sum(cm_to_double(layout_info$heights)) + outer_margin_in_cm()
     list(width = cm_to_inches(width_in_cm),
@@ -323,7 +310,7 @@ cm_to_inches <- function(x) {
 #' @return None.
 plot_models <- function(models, rows = "outcomes", columns = "exposures")
 {
-    layout_info <- find_layout_info(models, rows, columns)
+    layout_info <- find_layout(find_number_of(rows, models), find_number_of(columns, models))
     set_layout(layout_info)
     xylim <- find_xy_ranges(models)
     sorted_models <- sort_models_for_plotting(models, rows, columns)

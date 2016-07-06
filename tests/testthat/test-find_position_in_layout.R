@@ -1,7 +1,7 @@
 context("find_position_in_layout")
 
 sorted_models <- sort_models_for_plotting(models, rows = "exposures", columns = "outcomes")
-layout_info <- find_layout_info(sorted_models, rows = "exposures", columns = "outcomes")
+layout_info <- find_layout(find_number_of("exposures", sorted_models), find_number_of("outcomes", models))
 
 expect_positions_helper <- function(position, true_positions) {
     all_positions <- c("bottom", "left", "top", "right")
