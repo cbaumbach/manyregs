@@ -333,6 +333,15 @@ plot_models <- function(models, rows = "outcomes", columns = "exposures")
     }
 }
 
+
+#' Find number of outcomes, exposures, or adjustments
+#'
+#' @param type One of "outcomes", "exposures", or "adjustments"
+#' @param models List of models
+#' @return Number of variables of type \code{type}.
+find_number_of <- function(type, models) {
+    length(eval(parse(text = sprintf("find_%s(models)", type))))
+}
 set_layout <- function(layout_info) {
     layout(layout_info$mat, layout_info$widths, layout_info$heights)
     par(mar = c(0, 0, 0, 0))
