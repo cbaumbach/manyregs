@@ -783,3 +783,20 @@ find_segment_limits <- function(segment) {
     list(x = range(c(segment$x0, segment$x1)),
         y = range(c(segment$y0, segment$y1)))
 }
+
+#' Find x and y ranges for confidence intervals for a list of models
+#'
+#' @param models A list of models
+#' @return A list with elements "xlim" and "ylim" containing the x and
+#'     y ranges needed for plotting confidence intervals for the
+#'     exposures of a list of models.
+find_xy_ranges <- function(models) {
+    segments <- lapply(models, find_segments_to_plot)
+    xylims <- lapply(segments, find_segment_limits)
+    xylim <- Reduce(function(maximum, current) {
+        list(xlim = range(c(maximum$x, current$x)),
+            ylim = range(c(maximum$y, current$y)))
+    }, xylims)
+    xylim$x <- xylim$x + .5 * c(-1, +1)
+    xylim
+}
