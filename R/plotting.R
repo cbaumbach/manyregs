@@ -302,6 +302,75 @@ cm_to_inches <- function(x) {
     x / 2.54
 }
 
+#' Plot fitted models
+#'
+#' @param models List of models
+#' @param rows One of "outcomes", "exposures", "adjustments"
+#' @param columns One of "outcomes", "exposures", "adjustments"
+#' @details The `rows` and `columns` arguments define which of
+#'     outcomes, exposures, or adjustments occupy the rows and columns
+#'     of the plot, respectively.  Conceptually there is a third
+#'     parameter, `page`, that is automatically set depending on the
+#'     values of `rows` and `columns`.  Each of `rows`, `columns`, and
+#'     `page` must correspond to one of "outcomes", "exposures", or
+#'     "adjustments", and no two may have the same value.  If, for
+#'     example, `rows = "outcomes"`, `columns = "exposures"`, and
+#'     `page = "adjustments"`, then the function creates as many pages
+#'     of plots as there are adjustments.  Every page corresponds to
+#'     one adjustment and contains a plot made up of several subplots
+#'     where subplots in rows correspond to different outcomes and
+#'     subplots in columns correspond to different exposures.
+#' @return None.
+#'
+#' @export
+plot_models <- function(models, rows = "outcomes", columns = "exposures")
+{
+    layout_info <- find_layout_info(models, rows, columns)
+    set_layout(layout_info)
+    xylim <- find_xy_ranges(models)
+    sorted_models <- sort_models_for_plotting(models, rows, columns)
+    for (model_number in seq_along(sorted_models)) {
+        position <- find_position_in_layout(model_number, layout_info)
+        plot_a_model(sorted_models[[model_number]], rows, columns, xylim, position)
+    }
+}
+
+set_layout <- function(layout_info) {
+    layout(layout_info$mat, layout_info$widths, layout_info$heights)
+    par(mar = c(0, 0, 0, 0))
+    par(omi = c(cm_to_inches(outer_margin_in_cm()), 0, 0, 0))
+}
+
 outer_margin_in_cm <- function() {
     1
+}
+
+plot_a_model <- function(model, rows, columns, xylim, position) {
+    plot_segments(model, xylim$xlim, xylim$ylim)
+    plot_labels(model, rows, columns, position)
+}
+
+plot_segments <- function(model, xlim, ylim) {
+    segment <- find_segments_to_plot(model)
+    plot(1, xlim = xlim, ylim = ylim, ann = FALSE, axes = FALSE, type = "n")
+    segments(segment$x0, segment$y0, segment$x1, segment$y1)
+    if (nrow(segment) == 1L)
+        pch <- 20L
+    else
+        pch <- c(4, rep(20, nrow(segment) - 1))
+    points(segment$x0, (segment$y0 + segment$y1) / 2, pch = pch, cex = 1.5)
+    abline(h = 0, lty = "dashed")
+    box()
+}
+
+plot_labels <- function(model, rows, columns, position) {
+    labels <- find_plot_labels(model, rows, columns)
+    if (position$left)
+        mtext(labels$row, side = 2, line = 1, xpd = NA)
+    if (position$right)
+        axis(4, las = 1)
+    if (position$top)
+        mtext(labels$column, side = 3, line = 1, xpd = NA)
+    if (position$top && position$left)  # only for 1st plot of page
+        mtext(labels$page, side = 1, line = 1, outer = TRUE)
 }
