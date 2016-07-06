@@ -772,3 +772,14 @@ find_exposure_confidence_intervals <- function(model) {
 escape_characters <- function(x, character_class) {
     gsub(paste0("(", character_class, ")"), "\\\\\\1", x)
 }
+
+#' Find x and y ranges of segments
+#'
+#' @param segment Data frame of segments as returned by
+#'     \code{\link{find_segments_to_plot}}
+#' @return A list with elements "x" and "y" giving the x and y ranges
+#'     of the segments in \code{segments}.
+find_segment_limits <- function(segment) {
+    list(x = range(c(segment$x0, segment$x1)),
+        y = range(c(segment$y0, segment$y1)))
+}
