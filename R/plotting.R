@@ -18,7 +18,7 @@ find_layout <- function(nrow, ncol) {
 }
 
 margin_width <- function() {
-    lcm(.5)
+    lcm(1)
 }
 
 plot_width <- function() {
