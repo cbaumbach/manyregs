@@ -252,7 +252,7 @@ find_xy_ranges <- function(models) {
         list(xlim = range(c(maximum$x, current$x)),
             ylim = range(c(maximum$y, current$y)))
     }, xylims)
-    xylim$x <- xylim$x + .5 * c(-1, +1)
+    xylim$xlim <- xylim$xlim + .5 * c(-1, +1)
     xylim
 }
 
