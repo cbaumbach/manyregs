@@ -731,3 +731,14 @@ find_plot_labels <- function(model, rows, columns) {
         column = find_label_for(x$columns),
         page = sprintf("%s: %s", sub("s$", "", x$pages), find_label_for(x$pages)))
 }
+
+#' Is variable categorical in model?
+#'
+#' @param variable Name of covariate in \code{model}
+#' @param model A model object
+#' @return Returns \code{TRUE} if \code{variable} is categorical in
+#'     \code{model}, otherwise (if \code{variable} is continuous)
+#'     returns \code{FALSE}.
+is_categorical <- function(variable, model) {
+    ! variable %in% summary(model)$variable
+}
