@@ -255,3 +255,22 @@ find_xy_ranges <- function(models) {
     xylim$x <- xylim$x + .5 * c(-1, +1)
     xylim
 }
+
+#' Find the position of a model in a layout
+#'
+#' @param model_number Index of model in the list of models that is
+#'     used for plotting
+#' @param layout_info Layout information as returned by
+#'     \code{\link{find_layout}}
+#' @return A list with elements "bottom", "left", "top", and "right"
+#'     where an element is \code{TRUE} if the model is located in the
+#'     respective part of the layout, otherwise the element is
+#'     \code{FALSE}.
+find_position_in_layout <- function(model_number, layout_info) {
+    models_per_page <- sum(layout_info$mat != 0L)
+    model_number <- (model_number - 1L) %% models_per_page + 1L
+    list(bottom = model_number %in% layout_info$bottom,
+        left = model_number %in% layout_info$left,
+        top = model_number %in% layout_info$top,
+        right = model_number %in% layout_info$right)
+}
