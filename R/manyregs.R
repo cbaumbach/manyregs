@@ -743,6 +743,25 @@ is_categorical <- function(variable, model) {
     ! variable %in% summary(model)$variable
 }
 
+#' Find segments to plot (as confidence intervals)
+#'
+#' @param model A fitted model object
+#' @return A data frame with columns "x0", "x1", "y0", and "y1" that
+#'     can be used as arguments to \code{\link[graphics]{segments}}.
+find_segments_to_plot <- function(model) {
+    x <- find_exposure_confidence_intervals(model)
+    if (is_categorical(model$exposure, model))
+        x <- rbind(c(0, 0), x)
+    data.frame(x0 = seq_len(nrow(x)), x1 = seq_len(nrow(x)),
+        y0 = x$lcl, y1 = x$ucl)
+}
+
+find_exposure_confidence_intervals <- function(model) {
+    x <- summary(model)
+    pattern <- escape_characters(sprintf("^%s\\d*$", model$exposure), "[()]")
+    x[grep(pattern, x$variable), c("lcl", "ucl"), drop = FALSE]
+}
+
 #' Escape characters from character class
 #'
 #' @param x Character vector in which to escape characters
