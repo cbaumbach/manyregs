@@ -800,3 +800,16 @@ find_xy_ranges <- function(models) {
     xylim$x <- xylim$x + .5 * c(-1, +1)
     xylim
 }
+
+#' Convenience wrapper around \code{find_layout}
+#'
+#' @param models A list of models
+#' @param rows One of "outcomes", "exposures", or "adjustments"
+#' @param columns One of "outcomes", "exposures", or "adjustments"
+#' @return A list as returned by \code{\link{find_layout}}.
+find_layout_info <- function(models, rows, columns) {
+    find_number_of <- function(dimension) {
+        length(eval(parse(text = sprintf("find_%s(models)", dimension))))
+    }
+    find_layout(find_number_of(rows), find_number_of(columns))
+}
