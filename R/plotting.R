@@ -12,7 +12,7 @@ find_layout <- function(nrow, ncol) {
     m <- matrix(seq_len(nrow * ncol), nrow = nrow, byrow = TRUE)
     mat <- cbind(0, rbind(0, m), 0)
     widths <- c(margin_width(), rep_len(plot_width(), ncol), margin_width())
-    heights <- c(margin_width(), rep_len(plot_width(), nrow), margin_width())
+    heights <- c(margin_width(), rep_len(plot_width(), nrow))
     list(mat = mat, widths = widths, heights = heights,
         bottom = m[nrow,], left = m[,1], top = m[1,], right = m[,ncol])
 }
@@ -273,4 +273,35 @@ find_position_in_layout <- function(model_number, layout_info) {
         left = model_number %in% layout_info$left,
         top = model_number %in% layout_info$top,
         right = model_number %in% layout_info$right)
+}
+
+#' Find dimensions of device region for plotting models
+#'
+#' @param models A list of models
+#' @param rows One of "outcomes", "exposures", or "adjustments"
+#' @param columns One of "outcomes", "exposures", or "adjustments"
+#' @return A list with elements "width" and "height" containing the
+#'     recommended width and height (in inches) for plotting the
+#'     models according to \code{rows} and \code{columns} with devices
+#'     such as \code{\link[grDevices]{pdf}} or
+#'     \code{\link[grDevices]{jpeg}}.  Note that you need to specify
+#'     \code{units = "in"} when using \code{\link[grDevices]{jpeg}}.
+find_device_dimensions <- function(models, rows = "outcomes", columns = "exposures") {
+    layout_info <- find_layout_info(models, rows, columns)
+    width_in_cm <- sum(cm_to_double(layout_info$widths))
+    height_in_cm <- sum(cm_to_double(layout_info$heights)) + outer_margin_in_cm()
+    list(width = cm_to_inches(width_in_cm),
+        height = cm_to_inches(height_in_cm))
+}
+
+cm_to_double <- function(x) {
+    as.double(sub(" cm", "", x))
+}
+
+cm_to_inches <- function(x) {
+    x / 2.54
+}
+
+outer_margin_in_cm <- function() {
+    1
 }
