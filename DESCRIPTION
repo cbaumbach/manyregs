@@ -4,7 +4,7 @@ Title: manyregs --- Flexible and concise regression analysis
 Description: The manyregs package provides a concise and yet flexible
     way to specify, fit, summarize, and plot potentially large numbers
     of regression models.
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Date: 2016-07-07
 Authors@R: person("Clemens", "Baumbach", role = c("aut", "cre"),
     email = "clemens.baumbach@gmx.net")
