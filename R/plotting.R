@@ -320,6 +320,49 @@ plot_models <- function(models, rows = "outcomes", columns = "exposures")
     }
 }
 
+#' Create plots with confidence intervals of exposure variable
+#'
+#' @param filename Output filename
+#' @param models List of models
+#' @param rows One of "outcomes", "exposures", "adjustments"
+#' @param columns One of "outcomes", "exposures", "adjustments"
+#' @param ppi Number of pixels per inch
+#' @return None.
+#'
+#' @export
+create_pdf <- function(filename, models, rows = NULL, columns = NULL) {
+    dimensions <- find_device_dimensions(models, rows, columns)
+    pdf(filename, dimensions$width, dimensions$height, paper = "special")
+    tryCatch(plot_models(models, rows, columns), finally = dev.off())
+}
+
+create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, ppi = 200) {
+    filename <- maybe_insert_format_string(filename, models, rows, columns)
+    dimensions <- find_device_dimensions(models, rows, columns)
+    bitmap(filename, dimensions$width, dimensions$height, units = "in", res = ppi)
+    tryCatch(plot_models(models, rows, columns), finally = dev.off())
+}
+
+maybe_insert_format_string <- function(filename, models, rows, columns) {
+    pages <- find_pages_rows_columns(rows, columns)$pages
+    if (find_number_of(pages, models) > 1) {
+        replacement <- sprintf("\\1_%s_%%d.\\2", pages)
+        filename <- sub("(.*)\\.(.*)", replacement, filename)
+    }
+    filename
+}
+
+#' @rdname create_pdf
+#' @export
+create_jpeg <- function(filename, models, rows = NULL, columns = NULL, ppi = 200) {
+    create_bitmap(jpeg, filename, models, rows, columns, ppi)
+}
+
+#' @rdname create_pdf
+#' @export
+create_png <- function(filename, models, rows = NULL, columns = NULL, ppi = 200) {
+    create_bitmap(png, filename, models, rows, columns, ppi)
+}
 
 #' Find number of outcomes, exposures, or adjustments
 #'
@@ -329,6 +372,7 @@ plot_models <- function(models, rows = "outcomes", columns = "exposures")
 find_number_of <- function(type, models) {
     length(eval(parse(text = sprintf("find_%s(models)", type))))
 }
+
 set_layout <- function(layout_info) {
     layout(layout_info$mat, layout_info$widths, layout_info$heights)
     par(mar = c(0, 0, 0, 0))
