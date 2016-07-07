@@ -1,18 +1,18 @@
 #' manyregs --- Flexible and concise regression analysis
 #'
 #' The manyregs package provides a concise and yet flexible way to
-#' specify, fit, and summarize potentially large numbers of regression
-#' models.
+#' specify, fit, summarize, and plot potentially large numbers of
+#' regression models.
 #'
 #' @examples
 #' N <- 100L
 #' data <- data.frame(
-#'     y1 = as.integer(cut(rnorm(N), 2)) - 1L,
-#'     y2 = as.integer(cut(rnorm(N), 2)) - 1L,
-#'     x1 = as.integer(cut(rnorm(N), 2)) - 1L,
-#'     x2 = as.integer(cut(rnorm(N), 3)),
+#'     y1 = factor(as.integer(cut(rnorm(N), 2)) - 1L),
+#'     y2 = factor(as.integer(cut(rnorm(N), 2)) - 1L),
+#'     x1 = factor(as.integer(cut(rnorm(N), 2)) - 1L),
+#'     x2 = factor(as.integer(cut(rnorm(N), 3))),
 #'     x3 = rnorm(N),
-#'     z1 = as.integer(cut(rnorm(N), 3)),
+#'     z1 = factor(as.integer(cut(rnorm(N), 3))),
 #'     z2 = rnorm(N))
 #'
 #' outcomes <- c("y1", "y2")
@@ -26,4 +26,7 @@
 #' models <- create_models(outcomes, exposures, adjustments, logistic)
 #' fitted_models <- fit_models(models, data)
 #' summarized_models <- summarize_models(fitted_models)
+#' \dontrun{
+#' create_pdf("plots.pdf", fitted_models, rows = "exposures", columns = "outcomes")
+#' }
 "_PACKAGE"
