@@ -4,7 +4,8 @@
 \alias{plot_models}
 \title{Plot fitted models}
 \usage{
-plot_models(models, rows = "outcomes", columns = "exposures")
+plot_models(models, rows = "outcomes", columns = "exposures",
+  labels = NULL)
 }
 \arguments{
 \item{models}{List of models}
@@ -12,6 +13,9 @@ plot_models(models, rows = "outcomes", columns = "exposures")
 \item{rows}{One of "outcomes", "exposures", "adjustments"}
 
 \item{columns}{One of "outcomes", "exposures", "adjustments"}
+
+\item{labels}{Character vector with named elements (same as
+\code{from_to} argument of \code{\link{translate}})}
 }
 \value{
 None.

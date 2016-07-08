@@ -19,3 +19,10 @@ test_that("row - adjustment, column - outcome, page - exposure", {
     expected_labels <- list(row = "z1, z2", column = "y", page = "exposure: x")
     expect_equal(actual_labels, expected_labels)
 })
+
+test_that("with renaming", {
+    new_labels <- c("y" = "outcome", "x" = "exposure", "z1" = "adjustment1")
+    actual_labels <- find_plot_labels(test_model, rows = "outcomes", columns = "exposures", new_labels)
+    expected_labels <- list(row = "outcome", column = "exposure", page = "adjustment: adjustment1, z2")
+    expect_equal(actual_labels, expected_labels)
+})

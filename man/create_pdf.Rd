@@ -6,7 +6,7 @@
 \alias{create_png}
 \title{Create plots with confidence intervals of exposure variable}
 \usage{
-create_pdf(filename, models, rows = NULL, columns = NULL)
+create_pdf(filename, models, rows = NULL, columns = NULL, labels = NULL)
 
 create_jpeg(filename, models, rows = NULL, columns = NULL, ppi = 200)
 
@@ -20,6 +20,9 @@ create_png(filename, models, rows = NULL, columns = NULL, ppi = 200)
 \item{rows}{One of "outcomes", "exposures", "adjustments"}
 
 \item{columns}{One of "outcomes", "exposures", "adjustments"}
+
+\item{labels}{Character vector with named elements (same as
+\code{from_to} argument of \code{\link{translate}})}
 
 \item{ppi}{Number of pixels per inch}
 }

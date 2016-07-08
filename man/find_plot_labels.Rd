@@ -4,7 +4,7 @@
 \alias{find_plot_labels}
 \title{Find row, column, and page labels for model}
 \usage{
-find_plot_labels(model, rows, columns)
+find_plot_labels(model, rows, columns, labels = NULL)
 }
 \arguments{
 \item{model}{A model object}
@@ -12,6 +12,9 @@ find_plot_labels(model, rows, columns)
 \item{rows}{One of "outcomes", "exposures", or "adjustments"}
 
 \item{columns}{One of "outcomes", "exposures", or "adjustments"}
+
+\item{labels}{Character vector with named elements (same as
+\code{from_to} argument of \code{\link{translate}})}
 }
 \value{
 A list with elements "row", "column", and "page" containing

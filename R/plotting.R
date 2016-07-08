@@ -160,14 +160,16 @@ sort_models_for_plotting <- function(models, rows = NULL, columns = NULL) {
 #' @param model A model object
 #' @param rows One of "outcomes", "exposures", or "adjustments"
 #' @param columns One of "outcomes", "exposures", or "adjustments"
+#' @param labels Character vector with named elements (same as
+#'     \code{from_to} argument of \code{\link{translate}})
 #' @return A list with elements "row", "column", and "page" containing
 #'     the row, column, and page labels for the model.
-find_plot_labels <- function(model, rows, columns) {
+find_plot_labels <- function(model, rows, columns, labels = NULL) {
     x <- find_pages_rows_columns(rows, columns)
     find_label_for <- function(dimension) {
-        paste(model[[switch(dimension, outcomes = "outcome",
-            exposures = "exposure", adjustments = "adjustment")]],
-            collapse = ", ")
+        default_names <- model[[switch(dimension, outcomes = "outcome",
+            exposures = "exposure", adjustments = "adjustment")]]
+        paste(translate(default_names, labels), collapse = ", ")
     }
     list(row = find_label_for(x$rows),
         column = find_label_for(x$columns),
@@ -294,6 +296,8 @@ cm_to_inches <- function(x) {
 #' @param models List of models
 #' @param rows One of "outcomes", "exposures", "adjustments"
 #' @param columns One of "outcomes", "exposures", "adjustments"
+#' @param labels Character vector with named elements (same as
+#'     \code{from_to} argument of \code{\link{translate}})
 #' @details The `rows` and `columns` arguments define which of
 #'     outcomes, exposures, or adjustments occupy the rows and columns
 #'     of the plot, respectively.  Conceptually there is a third
@@ -308,7 +312,7 @@ cm_to_inches <- function(x) {
 #'     where subplots in rows correspond to different outcomes and
 #'     subplots in columns correspond to different exposures.
 #' @return None.
-plot_models <- function(models, rows = "outcomes", columns = "exposures")
+plot_models <- function(models, rows = "outcomes", columns = "exposures", labels = NULL)
 {
     layout_info <- find_layout(find_number_of(rows, models), find_number_of(columns, models))
     set_layout(layout_info)
@@ -316,7 +320,7 @@ plot_models <- function(models, rows = "outcomes", columns = "exposures")
     sorted_models <- sort_models_for_plotting(models, rows, columns)
     for (model_number in seq_along(sorted_models)) {
         position <- find_position_in_layout(model_number, layout_info)
-        plot_a_model(sorted_models[[model_number]], rows, columns, xylim, position)
+        plot_a_model(sorted_models[[model_number]], rows, columns, xylim, position, labels)
     }
 }
 
@@ -327,13 +331,15 @@ plot_models <- function(models, rows = "outcomes", columns = "exposures")
 #' @param rows One of "outcomes", "exposures", "adjustments"
 #' @param columns One of "outcomes", "exposures", "adjustments"
 #' @param ppi Number of pixels per inch
+#' @param labels Character vector with named elements (same as
+#'     \code{from_to} argument of \code{\link{translate}})
 #' @return None.
 #'
 #' @export
-create_pdf <- function(filename, models, rows = NULL, columns = NULL) {
+create_pdf <- function(filename, models, rows = NULL, columns = NULL, labels = NULL) {
     dimensions <- find_device_dimensions(models, rows, columns)
     pdf(filename, dimensions$width, dimensions$height, paper = "special")
-    tryCatch(plot_models(models, rows, columns), finally = dev.off())
+    tryCatch(plot_models(models, rows, columns, labels), finally = dev.off())
 }
 
 create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, ppi = 200) {
@@ -383,9 +389,9 @@ outer_margin_in_cm <- function() {
     1
 }
 
-plot_a_model <- function(model, rows, columns, xylim, position) {
+plot_a_model <- function(model, rows, columns, xylim, position, labels) {
     plot_segments(model, xylim$xlim, xylim$ylim)
-    plot_labels(model, rows, columns, position)
+    plot_labels(model, rows, columns, position, labels)
 }
 
 plot_segments <- function(model, xlim, ylim) {
@@ -401,16 +407,16 @@ plot_segments <- function(model, xlim, ylim) {
     box()
 }
 
-plot_labels <- function(model, rows, columns, position) {
-    labels <- find_plot_labels(model, rows, columns)
+plot_labels <- function(model, rows, columns, position, labels) {
+    plot_labels <- find_plot_labels(model, rows, columns, labels)
     if (position$left)
-        mtext(labels$row, side = 2, line = 1, xpd = NA)
+        mtext(plot_labels$row, side = 2, line = 1, xpd = NA)
     if (position$right)
         axis(4, las = 1)
     if (position$top)
-        mtext(labels$column, side = 3, line = 1, xpd = NA)
+        mtext(plot_labels$column, side = 3, line = 1, xpd = NA)
     if (position$top && position$left)  # only for 1st plot of page
-        mtext(labels$page, side = 1, line = 1, outer = TRUE)
+        mtext(plot_labels$page, side = 1, line = 1, outer = TRUE)
 }
 
 #' Translate strings
