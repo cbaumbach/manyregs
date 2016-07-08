@@ -412,3 +412,20 @@ plot_labels <- function(model, rows, columns, position) {
     if (position$top && position$left)  # only for 1st plot of page
         mtext(labels$page, side = 1, line = 1, outer = TRUE)
 }
+
+#' Translate strings
+#'
+#' @param x Character vector
+#' @param from_to Named character vector or named list
+#' @details If an element of \code{x} names one of the elements of
+#'     \code{from_to}, it is replaced by that element.
+#' @return A character vector of the same length as \code{x} with
+#'     elements translated according to \code{from_to}.
+translate <- function(x, from_to) {
+    if (is.null(x) || is.null(from_to))
+        return(x)
+    y <- unname(from_to[x])
+    has_translation <- x %in% names(from_to)
+    y[!has_translation] <- x[!has_translation]
+    y
+}
