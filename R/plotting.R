@@ -167,9 +167,10 @@ sort_models_for_plotting <- function(models, rows = NULL, columns = NULL) {
 find_plot_labels <- function(model, rows, columns, labels = NULL) {
     x <- find_pages_rows_columns(rows, columns)
     find_label_for <- function(dimension) {
-        default_names <- model[[switch(dimension, outcomes = "outcome",
+        default_labels <- model[[switch(dimension, outcomes = "outcome",
             exposures = "exposure", adjustments = "adjustment")]]
-        paste(translate(default_names, labels), collapse = ", ")
+        new_labels <- translate(default_labels, labels)
+        paste(Filter(Negate(is.null), new_labels), collapse = ", ")
     }
     list(row = find_label_for(x$rows),
         column = find_label_for(x$columns),
