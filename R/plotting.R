@@ -410,14 +410,15 @@ plot_segments <- function(model, xlim, ylim) {
 
 plot_labels <- function(model, rows, columns, position, labels) {
     plot_labels <- find_plot_labels(model, rows, columns, labels)
+    cex <- sqrt(1/2)
     if (position$left)
-        mtext(plot_labels$row, side = 2, line = 1, xpd = NA)
+        mtext(plot_labels$row, side = 2, line = 1, xpd = NA, cex = cex)
     if (position$right)
         axis(4, las = 1)
     if (position$top)
-        mtext(plot_labels$column, side = 3, line = 1, xpd = NA)
+        mtext(plot_labels$column, side = 3, line = 1, xpd = NA, cex = cex)
     if (position$top && position$left)  # only for 1st plot of page
-        mtext(plot_labels$page, side = 1, line = 1, outer = TRUE)
+        mtext(plot_labels$page, side = 1, line = 1, outer = TRUE, cex = cex)
 }
 
 #' Translate strings
