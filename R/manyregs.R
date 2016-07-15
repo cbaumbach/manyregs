@@ -90,7 +90,7 @@ covariate_separator <- " + "
 #'
 #' @export
 print.manyregs_model <- function(x, ...) {
-    cat(as.character(x), "\n", sep = "")
+    print(as.character(x))
     invisible(x)
 }
 
