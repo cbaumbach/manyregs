@@ -5,7 +5,7 @@
 \title{Plot fitted models}
 \usage{
 plot_models(models, rows = "outcomes", columns = "exposures",
-  labels = NULL)
+  labels = NULL, type = "beta")
 }
 \arguments{
 \item{models}{List of models}
@@ -16,6 +16,8 @@ plot_models(models, rows = "outcomes", columns = "exposures",
 
 \item{labels}{Character vector with named elements (same as
 \code{from_to} argument of \code{\link{translate}})}
+
+\item{type}{Confidence intervals to plot ("beta" or "OR")}
 }
 \value{
 None.

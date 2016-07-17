@@ -4,10 +4,12 @@
 \alias{find_segments_to_plot}
 \title{Find segments to plot (as confidence intervals)}
 \usage{
-find_segments_to_plot(model)
+find_segments_to_plot(model, type = "beta")
 }
 \arguments{
 \item{model}{A fitted model object}
+
+\item{type}{Confidence intervals to plot ("beta" or "OR")}
 }
 \value{
 A data frame with columns "x0", "x1", "y0", and "y1" that

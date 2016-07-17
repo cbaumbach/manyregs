@@ -4,10 +4,12 @@
 \alias{find_xy_ranges}
 \title{Find x and y ranges for confidence intervals for a list of models}
 \usage{
-find_xy_ranges(models)
+find_xy_ranges(models, type = "beta")
 }
 \arguments{
 \item{models}{A list of models}
+
+\item{type}{Confidence intervals to plot ("beta" or "OR")}
 }
 \value{
 A list with elements "xlim" and "ylim" containing the x and

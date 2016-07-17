@@ -206,14 +206,23 @@ is_categorical <- function(variable, model) {
 #' Find segments to plot (as confidence intervals)
 #'
 #' @param model A fitted model object
+#' @param type Confidence intervals to plot ("beta" or "OR")
 #' @return A data frame with columns "x0", "x1", "y0", and "y1" that
 #'     can be used as arguments to \code{\link[graphics]{segments}}.
-find_segments_to_plot <- function(model) {
+find_segments_to_plot <- function(model, type = "beta") {
     x <- find_exposure_confidence_intervals(model)
     if (is_categorical(model$exposure, model))
         x <- rbind(c(0, 0), x)
-    data.frame(x0 = seq_len(nrow(x)), x1 = seq_len(nrow(x)),
-        y0 = x$lcl, y1 = x$ucl)
+    segments <- data.frame(
+        x0 = seq_len(nrow(x)),
+        x1 = seq_len(nrow(x)),
+        y0 = x$lcl,
+        y1 = x$ucl)
+    if (type == "OR") {
+        segments$y0 <- exp(segments$y0)
+        segments$y1 <- exp(segments$y1)
+    }
+    segments
 }
 
 find_exposure_confidence_intervals <- function(model) {
@@ -247,11 +256,12 @@ find_segment_limits <- function(segment) {
 #' Find x and y ranges for confidence intervals for a list of models
 #'
 #' @param models A list of models
+#' @param type Confidence intervals to plot ("beta" or "OR")
 #' @return A list with elements "xlim" and "ylim" containing the x and
 #'     y ranges needed for plotting confidence intervals for the
 #'     exposures of a list of models.
-find_xy_ranges <- function(models) {
-    segments <- lapply(models, find_segments_to_plot)
+find_xy_ranges <- function(models, type = "beta") {
+    segments <- lapply(models, find_segments_to_plot, type = type)
     xylims <- lapply(segments, find_segment_limits)
     xylim <- Reduce(function(maximum, current) {
         list(xlim = range(c(maximum$x, current$x)),
@@ -314,6 +324,7 @@ cm_to_inches <- function(x) {
 #' @param columns One of "outcomes", "exposures", "adjustments"
 #' @param labels Character vector with named elements (same as
 #'     \code{from_to} argument of \code{\link{translate}})
+#' @param type Confidence intervals to plot ("beta" or "OR")
 #' @details The `rows` and `columns` arguments define which of
 #'     outcomes, exposures, or adjustments occupy the rows and columns
 #'     of the plot, respectively.  Conceptually there is a third
@@ -328,15 +339,15 @@ cm_to_inches <- function(x) {
 #'     where subplots in rows correspond to different outcomes and
 #'     subplots in columns correspond to different exposures.
 #' @return None.
-plot_models <- function(models, rows = "outcomes", columns = "exposures", labels = NULL)
+plot_models <- function(models, rows = "outcomes", columns = "exposures", labels = NULL, type = "beta")
 {
     layout_info <- find_layout(find_number_of(rows, models), find_number_of(columns, models))
     set_layout(layout_info)
-    xylim <- find_xy_ranges(models)
+    xylim <- find_xy_ranges(models, type)
     sorted_models <- sort_models_for_plotting(models, rows, columns)
     for (model_number in seq_along(sorted_models)) {
         position <- find_position_in_layout(model_number, layout_info)
-        plot_a_model(sorted_models[[model_number]], rows, columns, xylim, position, labels)
+        plot_a_model(sorted_models[[model_number]], rows, columns, xylim, position, labels, type)
     }
 }
 
@@ -349,20 +360,21 @@ plot_models <- function(models, rows = "outcomes", columns = "exposures", labels
 #' @param ppi Number of pixels per inch
 #' @param labels Character vector with named elements (same as
 #'     \code{from_to} argument of \code{\link{translate}})
+#' @param type Confidence intervals to plot ("beta" or "OR")
 #' @return None.
 #'
 #' @export
-create_pdf <- function(filename, models, rows = NULL, columns = NULL, labels = NULL) {
+create_pdf <- function(filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta") {
     dimensions <- find_device_dimensions(models, rows, columns)
     pdf(filename, dimensions$width, dimensions$height, paper = "special")
-    tryCatch(plot_models(models, rows, columns, labels), finally = dev.off())
+    tryCatch(plot_models(models, rows, columns, labels, type), finally = dev.off())
 }
 
-create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, ppi = 200) {
+create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, type = "beta", ppi = 200) {
     filename <- maybe_insert_format_string(filename, models, rows, columns)
     dimensions <- find_device_dimensions(models, rows, columns)
     bitmap(filename, dimensions$width, dimensions$height, units = "in", res = ppi)
-    tryCatch(plot_models(models, rows, columns), finally = dev.off())
+    tryCatch(plot_models(models, rows, columns, type = type), finally = dev.off())
 }
 
 maybe_insert_format_string <- function(filename, models, rows, columns) {
@@ -376,14 +388,14 @@ maybe_insert_format_string <- function(filename, models, rows, columns) {
 
 #' @rdname create_pdf
 #' @export
-create_jpeg <- function(filename, models, rows = NULL, columns = NULL, ppi = 200) {
-    create_bitmap(jpeg, filename, models, rows, columns, ppi)
+create_jpeg <- function(filename, models, rows = NULL, columns = NULL, type = "beta", ppi = 200) {
+    create_bitmap(jpeg, filename, models, rows, columns, type, ppi)
 }
 
 #' @rdname create_pdf
 #' @export
-create_png <- function(filename, models, rows = NULL, columns = NULL, ppi = 200) {
-    create_bitmap(png, filename, models, rows, columns, ppi)
+create_png <- function(filename, models, rows = NULL, columns = NULL, type = "beta", ppi = 200) {
+    create_bitmap(png, filename, models, rows, columns, type, ppi)
 }
 
 #' Find number of outcomes, exposures, or adjustments
@@ -405,13 +417,13 @@ outer_margin_in_cm <- function() {
     1
 }
 
-plot_a_model <- function(model, rows, columns, xylim, position, labels) {
-    plot_segments(model, xylim$xlim, xylim$ylim)
+plot_a_model <- function(model, rows, columns, xylim, position, labels, type = "beta") {
+    plot_segments(model, xylim$xlim, xylim$ylim, type)
     plot_labels(model, rows, columns, position, labels)
 }
 
-plot_segments <- function(model, xlim, ylim) {
-    segment <- find_segments_to_plot(model)
+plot_segments <- function(model, xlim, ylim, type = "beta") {
+    segment <- find_segments_to_plot(model, type)
     plot(1, xlim = xlim, ylim = ylim, ann = FALSE, axes = FALSE, type = "n")
     segments(segment$x0, segment$y0, segment$x1, segment$y1)
     if (nrow(segment) == 1L)
@@ -419,7 +431,7 @@ plot_segments <- function(model, xlim, ylim) {
     else
         pch <- c(4, rep(20, nrow(segment) - 1))
     points(segment$x0, (segment$y0 + segment$y1) / 2, pch = pch, cex = 1.5)
-    abline(h = 0, lty = "dashed")
+    abline(h = switch(type, beta = 0, OR = 1), lty = "dashed")
     box()
 }
 
