@@ -9,9 +9,11 @@
 create_pdf(filename, models, rows = NULL, columns = NULL, labels = NULL,
   type = "beta")
 
-create_jpeg(filename, models, rows = NULL, columns = NULL, ppi = 200)
+create_jpeg(filename, models, rows = NULL, columns = NULL, labels = NULL,
+  type = "beta", ppi = 200)
 
-create_png(filename, models, rows = NULL, columns = NULL, ppi = 200)
+create_png(filename, models, rows = NULL, columns = NULL, labels = NULL,
+  type = "beta", ppi = 200)
 }
 \arguments{
 \item{filename}{Output filename}
