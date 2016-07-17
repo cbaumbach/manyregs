@@ -222,6 +222,7 @@ find_segments_to_plot <- function(model, type = "beta") {
         segments$y0 <- exp(segments$y0)
         segments$y1 <- exp(segments$y1)
     }
+    attr(segments, "baseline") <- switch(type, beta = 0, OR = 1)
     segments
 }
 
@@ -431,7 +432,7 @@ plot_segments <- function(model, xlim, ylim, type = "beta") {
     else
         pch <- c(4, rep(20, nrow(segment) - 1))
     points(segment$x0, (segment$y0 + segment$y1) / 2, pch = pch, cex = 1.5)
-    abline(h = switch(type, beta = 0, OR = 1), lty = "dashed")
+    abline(h = attr(segment, "baseline"), lty = "dashed")
     box()
 }
 
