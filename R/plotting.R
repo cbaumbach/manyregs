@@ -207,29 +207,32 @@ is_categorical <- function(variable, model) {
 #'
 #' @param model A fitted model object
 #' @param type Confidence intervals to plot ("beta" or "OR")
-#' @return A data frame with columns "x0", "x1", "y0", and "y1" that
-#'     can be used as arguments to \code{\link[graphics]{segments}}.
+#' @return A data frame with columns "x0", "x1", "y0", "y1", and
+#'     "midpoints" that can be used as arguments to
+#'     \code{\link[graphics]{segments}}.  The midpoints correspond to
+#'     position of the effect estimate within the confidence interval.
 find_segments_to_plot <- function(model, type = "beta") {
-    x <- find_exposure_confidence_intervals(model)
+    x <- find_exposure_estimates(model)
     if (is_categorical(model$exposure, model))
         x <- rbind(c(0, 0), x)
     segments <- data.frame(
         x0 = seq_len(nrow(x)),
         x1 = seq_len(nrow(x)),
         y0 = x$lcl,
-        y1 = x$ucl)
+        y1 = x$ucl,
+        midpoints = x$beta)
     if (type == "OR") {
-        segments$y0 <- exp(segments$y0)
-        segments$y1 <- exp(segments$y1)
+        cols <- c("y0", "y1", "midpoints")
+        segments[cols] <- lapply(segments[cols], exp)
     }
     attr(segments, "reference_line") <- switch(type, beta = 0, OR = 1)
     segments
 }
 
-find_exposure_confidence_intervals <- function(model) {
+find_exposure_estimates <- function(model) {
     x <- summary(model)
     pattern <- escape_characters(sprintf("^%s\\d*$", model$exposure), "[()]")
-    x[grep(pattern, x$variable), c("lcl", "ucl"), drop = FALSE]
+    x[grep(pattern, x$variable), c("beta", "lcl", "ucl"), drop = FALSE]
 }
 
 #' Escape characters from character class
@@ -429,8 +432,7 @@ plot_segments <- function(model, xlim, ylim, type = "beta") {
     segments(segment$x0, segment$y0, segment$x1, segment$y1)
     pt <- find_point_settings(nrow(segment))
     abline(h = attr(segment, "reference_line"), lty = "dashed")
-    points(segment$x0, (segment$y0 + segment$y1) / 2,
-        pch = pt$pch, cex = pt$cex, bg = pt$bg)
+    points(segment$x0, segment$midpoints, pch = pt$pch, cex = pt$cex, bg = pt$bg)
     box()
 }
 

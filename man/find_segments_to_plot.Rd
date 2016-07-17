@@ -12,8 +12,10 @@ find_segments_to_plot(model, type = "beta")
 \item{type}{Confidence intervals to plot ("beta" or "OR")}
 }
 \value{
-A data frame with columns "x0", "x1", "y0", and "y1" that
-    can be used as arguments to \code{\link[graphics]{segments}}.
+A data frame with columns "x0", "x1", "y0", "y1", and
+    "midpoints" that can be used as arguments to
+    \code{\link[graphics]{segments}}.  The midpoints correspond to
+    position of the effect estimate within the confidence interval.
 }
 \description{
 Find segments to plot (as confidence intervals)
