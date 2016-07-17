@@ -1,3 +1,18 @@
+#' Plot model.
+#'
+#' @param x Model to be printed
+#' @param \dots Ignored
+#' @param labels Named character vector or named list.
+#' @details If a variable in the model names one of the elements of
+#'     \code{labels}, its name will be replaced by that element when
+#'     used as a label.
+#' @return None.
+#'
+#' @export
+plot.manyregs_model <- function(x, ..., labels = NULL) {
+    plot_models(list(x), labels = labels)
+}
+
 #' Find layout for plots
 #'
 #' @param nrow Number of rows

@@ -2,6 +2,7 @@
 
 S3method(as.character,manyregs_model)
 S3method(formula,manyregs_model)
+S3method(plot,manyregs_model)
 S3method(print,manyregs_model)
 S3method(summary,manyregs_model)
 export(compare_distros)
