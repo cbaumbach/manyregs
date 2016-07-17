@@ -370,11 +370,11 @@ create_pdf <- function(filename, models, rows = NULL, columns = NULL, labels = N
     tryCatch(plot_models(models, rows, columns, labels, type), finally = dev.off())
 }
 
-create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, type = "beta", ppi = 200) {
+create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta", ppi = 200) {
     filename <- maybe_insert_format_string(filename, models, rows, columns)
     dimensions <- find_device_dimensions(models, rows, columns)
     bitmap(filename, dimensions$width, dimensions$height, units = "in", res = ppi)
-    tryCatch(plot_models(models, rows, columns, type = type), finally = dev.off())
+    tryCatch(plot_models(models, rows, columns, labels, type), finally = dev.off())
 }
 
 maybe_insert_format_string <- function(filename, models, rows, columns) {
@@ -388,14 +388,14 @@ maybe_insert_format_string <- function(filename, models, rows, columns) {
 
 #' @rdname create_pdf
 #' @export
-create_jpeg <- function(filename, models, rows = NULL, columns = NULL, type = "beta", ppi = 200) {
-    create_bitmap(jpeg, filename, models, rows, columns, type, ppi)
+create_jpeg <- function(filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta", ppi = 200) {
+    create_bitmap(jpeg, filename, models, rows, columns, labels, type, ppi)
 }
 
 #' @rdname create_pdf
 #' @export
-create_png <- function(filename, models, rows = NULL, columns = NULL, type = "beta", ppi = 200) {
-    create_bitmap(png, filename, models, rows, columns, type, ppi)
+create_png <- function(filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta", ppi = 200) {
+    create_bitmap(png, filename, models, rows, columns, labels, type, ppi)
 }
 
 #' Find number of outcomes, exposures, or adjustments
