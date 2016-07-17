@@ -427,12 +427,15 @@ plot_segments <- function(model, xlim, ylim, type = "beta") {
     segment <- find_segments_to_plot(model, type)
     plot(1, xlim = xlim, ylim = ylim, ann = FALSE, axes = FALSE, type = "n")
     segments(segment$x0, segment$y0, segment$x1, segment$y1)
-    if (nrow(segment) == 1L)
-        pch <- 20L
-    else
-        pch <- c(4, rep(20, nrow(segment) - 1))
-    points(segment$x0, (segment$y0 + segment$y1) / 2, pch = pch, cex = 1.5)
+    if (nrow(segment) == 1L) {          # continuous case
+        cex <- 1.5
+        pch <- 21L
+    } else {              # categorical case (with reference category)
+        cex <- c(1.5, rep_len(1.5, nrow(segment) - 1))
+        pch <- c(4, rep_len(c(21, 24, 22, 25, 23), nrow(segment) - 1))
+    }
     abline(h = attr(segment, "baseline"), lty = "dashed")
+    points(segment$x0, (segment$y0 + segment$y1) / 2, pch = pch, cex = cex, bg = "white")
     box()
 }
 
