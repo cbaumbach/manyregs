@@ -427,20 +427,27 @@ plot_segments <- function(model, xlim, ylim, type = "beta") {
     segment <- find_segments_to_plot(model, type)
     plot(1, xlim = xlim, ylim = ylim, ann = FALSE, axes = FALSE, type = "n")
     segments(segment$x0, segment$y0, segment$x1, segment$y1)
-    if (nrow(segment) == 1L) {          # continuous case
-        cex <- 1.5
+    pt <- find_point_settings(nrow(segment))
+    abline(h = attr(segment, "reference_line"), lty = "dashed")
+    points(segment$x0, (segment$y0 + segment$y1) / 2,
+        pch = pt$pch, cex = pt$cex, bg = pt$bg)
+    box()
+}
+
+find_point_settings <- function(number_of_segments) {
+    default_cex <- 1.5
+    if (number_of_segments == 1L) {     # continuous case
+        cex <- default_cex
         pch <- 21L
         bg <- "white"
     } else {              # categorical case (with reference category)
-        cex <- c(1.5, rep_len(1.5, nrow(segment) - 1))
+        cex <- c(default_cex, rep_len(default_cex, number_of_segments - 1))
         point_symbols <- c(21, 24, 22, 25, 23)
         point_backgrounds <- rep(c("white", "black"), each = length(point_symbols))
-        pch <- c(4, rep_len(point_symbols, nrow(segment) - 1))
-        bg <- c("white", rep_len(point_backgrounds, nrow(segment) - 1))
+        pch <- c(4, rep_len(point_symbols, number_of_segments - 1))
+        bg <- c("white", rep_len(point_backgrounds, number_of_segments - 1))
     }
-    abline(h = attr(segment, "reference_line"), lty = "dashed")
-    points(segment$x0, (segment$y0 + segment$y1) / 2, pch = pch, cex = cex, bg = bg)
-    box()
+    list(cex = cex, pch = pch, bg = bg)
 }
 
 plot_labels <- function(model, rows, columns, position, labels) {
