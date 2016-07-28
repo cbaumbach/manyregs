@@ -212,7 +212,7 @@ is_categorical <- function(variable, model) {
 #'     \code{\link[graphics]{segments}}.  The midpoints correspond to
 #'     position of the effect estimate within the confidence interval.
 find_segments_to_plot <- function(model, type = "beta") {
-    x <- find_exposure_estimates(summary(model), model$exposure)
+    x <- find_estimates_for(model$exposure, summary(model))
     if (is_categorical(model$exposure, model))
         x <- rbind(c(0, 0), x)
     segments <- data.frame(
@@ -229,7 +229,7 @@ find_segments_to_plot <- function(model, type = "beta") {
     segments
 }
 
-find_exposure_estimates <- function(summary_table, exposure) {
+find_estimates_for <- function(exposure, summary_table) {
     pattern <- escape_characters(sprintf("^%s\\d*$", exposure), "[()]")
     summary_table[grep(pattern, summary_table$variable),
         c("beta", "lcl", "ucl"), drop = FALSE]
