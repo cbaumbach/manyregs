@@ -214,7 +214,7 @@ is_categorical <- function(variable, model) {
 find_segments_to_plot <- function(model, type = "beta") {
     x <- find_estimates_for(model$exposure, summary(model))
     if (is_categorical(model$exposure, model))
-        x <- rbind(c(0, 0), x)
+        x <- rbind(0, x)
     segments <- data.frame(
         x0 = seq_len(nrow(x)),
         x1 = seq_len(nrow(x)),
