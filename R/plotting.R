@@ -229,9 +229,9 @@ find_segments_to_plot <- function(model, type = "beta") {
     segments
 }
 
-find_estimates_for <- function(exposure, model) {
+find_estimates_for <- function(variable, model) {
     summary_table <- summary(model)
-    pattern <- escape_characters(sprintf("^%s", exposure), "[()]")
+    pattern <- escape_characters(sprintf("^%s", variable), "[()]")
     summary_table[grep(pattern, summary_table$variable), , drop = FALSE]
 }
 
