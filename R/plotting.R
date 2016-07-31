@@ -231,7 +231,8 @@ find_segments_to_plot <- function(model, type = "beta") {
 
 find_estimates_for <- function(variable, model) {
     summary_table <- summary(model)
-    pattern <- escape_characters(sprintf("^%s", variable), "[()]")
+    fmt <- if (is_categorical(variable, model)) "^%s" else "^%s$"
+    pattern <- escape_characters(sprintf(fmt, variable), "[()]")
     summary_table[grep(pattern, summary_table$variable), , drop = FALSE]
 }
 

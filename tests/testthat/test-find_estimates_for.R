@@ -1,7 +1,7 @@
 context("find_estimates_for")
 
-data <- create_dataset("y", c("v", 2), "w", c("x", 3), c("z", 3, "LOW", "MID", "HIGH"))
-models <- create_models("y", "factor(v)", c("w", "x", "z"), linear)
+data <- create_dataset("y", c("v", 2), "w", "w2", c("x", 3), c("z", 3, "LOW", "MID", "HIGH"))
+models <- create_models("y", "factor(v)", c("w", "w2", "x", "z"), linear)
 model <- fit_models(models, data)[[1]]
 
 rows_matching <- function(variables, model) {
