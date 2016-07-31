@@ -1,45 +1,33 @@
 context("fit_models")
 
-f <- function(model, data) {
-    as.character(model)
+data <- create_dataset("y", "x1", "x2", "z")
+f <- function(model, data) as.character(model)
+models <- create_models("y", c("x1", "x2"), "z", f)
+
+discard_closures <- function(x) {
+    structure(Filter(Negate(is.function), x), class = class(x))
 }
-models <- create_models(c("y1", "y2"), "x", "z", f)
 
-test_that("one-by-one", {
-    fitted_models <- fit_models(models, NULL)
-    expect_equal(length(fitted_models), 2L)
-    m1 <- models[[1]]
-    m2 <- models[[2]]
-    fm1 <- fitted_models[[1]]
-    fm2 <- fitted_models[[2]]
-    expect_equal(fm1$fit, as.character(m1))
-    expect_equal(fm2$fit, as.character(m2))
-    expect_equal(remove_slots(fm1, "fit"), m1)
-    expect_equal(remove_slots(fm2, "fit"), m2)
+test_that("fitting many models at once gives the same results as separate fitting", {
+    actual <- fit_models(models, NULL)
+    for (i in seq_along(models))
+        expect_identical(actual[[i]], fit_model(models[[i]], NULL))
 })
 
-test_that("in parallel", {
-    expect_equal(fit_models(models, NULL, cores = 2), fit_models(models, NULL))
-})
-
-test_that("error", {
-    throw_error <- function(model, data) {
-        stop("an error")
+test_that("sequential and parallel execution yield the same result", {
+    sequential <- fit_models(models, NULL)
+    parallel <- fit_models(models, NULL, cores = 2)
+    # The f-slots of the models, that contain the function used to fit
+    # the models, are not identical after sequential and parallel
+    # execution.
+    for (i in seq_along(models)) {
+        expect_true(identical(f, sequential[[i]]$f))
+        expect_false(identical(f, parallel[[i]]$f))
     }
-    models <- create_models("y", "x", "z", throw_error)
-    expect_warning(fm <- fit_models(models, NULL)[[1]])
-    expect_match(fm$error, "an error")
-    expect_true("fit" %in% names(fm))
-    expect_equal(fm$fit, NULL)
-})
-
-test_that("warning", {
-    throw_warning <- function(model, data) {
-        warning("a warning")
-    }
-    models <- create_models("y", "x", "z", throw_warning)
-    expect_warning(fm <- fit_models(models, NULL)[[1]])
-    expect_match(fm$warning, "a warning")
-    expect_true("fit" %in% names(fm))
-    expect_equal(fm$fit, NULL)
+    # Parallel execution works by forking and the R process makes
+    # copies of itself.  I guess that's the problem.  So I remove
+    # closures before comparison.
+    sequential <- lapply(sequential, discard_closures)
+    parallel <- lapply(parallel, discard_closures)
+    expect_identical(sequential, parallel)
 })
