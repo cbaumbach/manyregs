@@ -1,3 +1,20 @@
+create_dataset <- function(..., number_of_rows = 100) {
+    variable_specs <- list(...)
+    data <- data.frame(lapply(variable_specs, create_column, number_of_rows))
+    variable_names <- vapply(variable_specs, `[`, character(1), 1)
+    names(data) <- variable_names
+    data
+}
+
+create_column <- function(spec, number_of_rows) {
+    if (length(spec) == 1)
+        return(rnorm(number_of_rows))
+    number_of_levels <- as.integer(spec[2])
+    x <- sample(gl(number_of_levels, number_of_rows / number_of_levels))
+    if (length(spec) >= 3)
+        levels(x) <- spec[-(1:2)]
+    x
+}
 
 test_data <- local({
     set.seed(12345)
