@@ -115,20 +115,22 @@ formula.manyregs_model <- function(x, env = parent.frame(), ...) {
 #'
 #' @export
 fit_models <- function(models, data, cores = 1L) {
-    parallel::mclapply(models, mc.cores = cores, function(m) {
-        tryCatch({
-            m$fit <- m$f(m, data)
-        }, warning = function(c) {
-            m$warning <<- conditionMessage(c)
-            m["fit"] <<- list(NULL)
-            warning(m$warning)
-        }, error = function(c) {
-            m$error <<- conditionMessage(c)
-            m["fit"] <<- list(NULL)
-            warning(m$error)
-        })
-        m
+    parallel::mclapply(models, mc.cores = cores, fit_model, data)
+}
+
+fit_model <- function(model, data) {
+    tryCatch({
+        model$fit <- model$f(model, data)
+    }, warning = function(c) {
+        model$warning <<- conditionMessage(c)
+        model["fit"] <<- list(NULL)
+        warning(model$warning)
+    }, error = function(c) {
+        model$error <<- conditionMessage(c)
+        model["fit"] <<- list(NULL)
+        warning(model$error)
     })
+    model
 }
 
 #' Remove slots from a model.
