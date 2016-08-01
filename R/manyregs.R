@@ -150,6 +150,8 @@ find_levels_of_variables <- function(model, data) {
 }
 
 find_variable_levels <- function(term, data) {
+    if (is.null(data))
+        return(NA_character_)
     eval(parse(text = sprintf("levels(%s)", term)), data)
 }
 

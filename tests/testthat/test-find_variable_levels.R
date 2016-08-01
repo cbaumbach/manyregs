@@ -17,4 +17,7 @@ test_that("factor with custom labels", {
     expect_equal(f("x", data), c("YES", "NO"))
 })
 
+test_that("return NA if data is NULL", {
+    expect_equal(f("x", NULL), NA_character_)
+})
 })
