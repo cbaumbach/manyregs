@@ -146,9 +146,10 @@ find_variable_levels <- function(model, data) {
     if (is.null(data))
         return(NULL)
     variables <- unlist(model[c("outcome", "exposure", "adjustment")], use.names = FALSE)
-    setNames(lapply(variables, function(v) {
-        eval(parse(text = sprintf("levels(%s)", v)), data)
-    }), variables)
+    find_levels <- function(term) {
+        eval(parse(text = sprintf("levels(%s)", term)), data)
+    }
+    setNames(lapply(variables, find_levels), variables)
 }
 
 #' Remove slots from a model.
