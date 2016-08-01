@@ -1,10 +1,10 @@
 context("find_variable_levels")
 
-test_that("find_variable_levels", {
-    data <- create_dataset("y", c("x", 2), c("z", 3, "LOW", "MID", "HIGH"))
+test_that("happy path", {
+    data <- create_dataset("y", c("w", 2), c("x", 2), c("z", 3, "LOW", "MID", "HIGH"))
     f <- function(model, data) as.character(model)
-    model <- new_model("y", "x", "z", f, "f")
+    model <- new_model("y", "x", c("factor(w)", "z"), f, "f")
     actual <- find_variable_levels(model, data)
-    expected <- list(y = NULL, x = c("1", "2"), z = c("LOW", "MID", "HIGH"))
+    expected <- list(y = NULL, x = c("1", "2"), "factor(w)" = c("1", "2"), z = c("LOW", "MID", "HIGH"))
     expect_equal(actual, expected)
 })
