@@ -150,7 +150,24 @@ find_levels_of_variables <- function(model, data) {
 find_variable_levels <- function(term, data) {
     if (is.null(data))
         return(NA_character_)
-    eval(parse(text = sprintf("levels(%s)", term)), data)
+    if (is_interaction(term))
+        find_interaction_levels(term, data)
+    else
+        eval(parse(text = sprintf("levels(%s)", term)), data)
+}
+
+is_interaction <- function(term) {
+    grepl(":", term) || grepl("*", term, fixed = TRUE)
+}
+
+find_interaction_levels <- function(term, data) {
+    variables <- unlist(strsplit(term, ":|\\*"), use.names = FALSE)
+    levels <- lapply(variables, find_variable_levels, data)
+    is_null <- Reduce(function(x, y) c(x, is.null(y)), levels, NULL)
+    if (all(is_null))
+        NULL
+    else
+        levels
 }
 
 #' Remove slots from a model.
