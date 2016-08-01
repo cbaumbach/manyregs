@@ -133,6 +133,19 @@ fit_model <- function(model, data) {
     model
 }
 
+#' Find levels of variables
+#'
+#' @param model Model object
+#' @param data Dataset
+#' @return A named list containing the levels of variables in
+#'     \code{model} as found in \code{data}.  Elements are named
+#'     according to the corresponding variable.  Levels of non-factor
+#'     variables are \code{NULL}.
+find_variable_levels <- function(model, data) {
+    variables <- unlist(model[c("outcome", "exposure", "adjustment")], use.names = FALSE)
+    setNames(lapply(variables, function(v) levels(data[[v]])), variables)
+}
+
 #' Remove slots from a model.
 #'
 #' @param model Model from which to remove slots
