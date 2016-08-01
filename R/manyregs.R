@@ -119,7 +119,7 @@ fit_models <- function(models, data, cores = 1L) {
 }
 
 fit_model <- function(model, data) {
-    model$levels <- find_variable_levels(model, data)
+    model$levels <- find_levels_of_variables(model, data)
     tryCatch({
         model$fit <- model$f(model, data)
     }, warning = function(c) {
@@ -142,14 +142,15 @@ fit_model <- function(model, data) {
 #'     \code{model} as found in \code{data}.  Elements are named
 #'     according to the corresponding variable.  Levels of non-factor
 #'     variables are \code{NULL}.
-find_variable_levels <- function(model, data) {
+find_levels_of_variables <- function(model, data) {
     if (is.null(data))
         return(NULL)
     variables <- unlist(model[c("outcome", "exposure", "adjustment")], use.names = FALSE)
-    find_levels <- function(term) {
-        eval(parse(text = sprintf("levels(%s)", term)), data)
-    }
-    setNames(lapply(variables, find_levels), variables)
+    setNames(lapply(variables, find_variable_levels, data), variables)
+}
+
+find_variable_levels <- function(term, data) {
+    eval(parse(text = sprintf("levels(%s)", term)), data)
 }
 
 #' Remove slots from a model.
