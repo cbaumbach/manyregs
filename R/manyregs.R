@@ -143,8 +143,6 @@ fit_model <- function(model, data) {
 #'     according to the corresponding variable.  Levels of non-factor
 #'     variables are \code{NULL}.
 find_levels_of_variables <- function(model, data) {
-    if (is.null(data))
-        return(NULL)
     variables <- unlist(model[c("outcome", "exposure", "adjustment")], use.names = FALSE)
     setNames(lapply(variables, find_variable_levels, data), variables)
 }
