@@ -377,7 +377,8 @@ create_pdf <- function(filename, models, rows = NULL, columns = NULL, labels = N
 create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta", ppi = 200) {
     filename <- maybe_insert_format_string(filename, models, rows, columns)
     dimensions <- find_device_dimensions(models, rows, columns)
-    bitmap(filename, dimensions$width, dimensions$height, units = "in", res = ppi)
+    epsilon <- .005
+    bitmap(filename, dimensions$width + epsilon, dimensions$height + epsilon, units = "in", res = ppi)
     tryCatch(plot_models(models, rows, columns, labels, type), finally = dev.off())
 }
 
