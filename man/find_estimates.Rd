@@ -4,15 +4,17 @@
 \alias{find_estimates}
 \title{Extract estimates from fitted model}
 \usage{
-find_estimates(fit)
+find_estimates(model)
 }
 \arguments{
-\item{fit}{Fitted model}
+\item{model}{Fitted model}
 }
 \value{
-A data frame with columns "beta", "se", "pvalue", "lcl",
-    and "ucl" denoting the effect estimate, its standard error, the
-    p-value, and the lower and upper 95\% confidence limits.
+A data frame with columns "variable", "level", "beta",
+    "se", "pvalue", "lcl", and "ucl" denoting the name of the
+    variable, the corresponding level (in case of a factor), effect
+    estimate, its standard error, the p-value, and the lower and
+    upper 95\% confidence limits.
 
     Note that the confidence limits are based on the assumption of
     asymptotic normality of the effect estimates.  This assumption

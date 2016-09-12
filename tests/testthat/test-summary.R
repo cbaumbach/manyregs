@@ -16,7 +16,11 @@ test_that("outcome", {
 })
 
 test_that("variable", {
-    expect_equal(actual$variable, c("(Intercept)", "x11"))
+    expect_equal(actual$variable, c("(Intercept)", "x1"))
+})
+
+test_that("levels", {
+    expect_equal(actual$level, c("", "1"))
 })
 
 test_that("nobs", {

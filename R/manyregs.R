@@ -228,10 +228,11 @@ summary.manyregs_model <- function(object, ...) {
 }
 
 summarize_fitted_model <- function(model) {
-    x <- find_estimates(model$fit)
+    x <- find_estimates(model)
     data.frame(
         outcome = model$outcome,
         variable = x$variable,
+        level = x$level,
         nobs = nobs(model$fit),
         beta = x$beta,
         se = x$se,
@@ -247,25 +248,29 @@ summarize_non_fitted_model <- function(model) {
         stringsAsFactors = FALSE)
 }
 
-
 #' Extract estimates from fitted model
 #'
-#' @param fit Fitted model
-#' @return A data frame with columns "beta", "se", "pvalue", "lcl",
-#'     and "ucl" denoting the effect estimate, its standard error, the
-#'     p-value, and the lower and upper 95\% confidence limits.
+#' @param model Fitted model
+#' @return A data frame with columns "variable", "level", "beta",
+#'     "se", "pvalue", "lcl", and "ucl" denoting the name of the
+#'     variable, the corresponding level (in case of a factor), effect
+#'     estimate, its standard error, the p-value, and the lower and
+#'     upper 95\% confidence limits.
 #'
 #'     Note that the confidence limits are based on the assumption of
 #'     asymptotic normality of the effect estimates.  This assumption
 #'     might be violated in small samples.
-find_estimates <- function(fit) {
-    beta <- coef(fit)
-    se <- sqrt(diag(vcov(fit)))
-    ci <- confint.default(fit)
-    pvalue <- find_pvalue(coef(summary(fit)))
-    variable <- names(beta)
-    data.frame(variable, beta, se, pvalue, lcl = ci[,1], ucl = ci[,2],
-        stringsAsFactors = FALSE)
+find_estimates <- function(model) {
+    coefs <- coef(summary(model$fit))
+    beta <- coefs[, "Estimate"]
+    se <- coefs[, grep("^Std.[ ]?[eE]rr(or)?$", colnames(coefs))]
+    z <- qnorm(1 - .05 / 2)
+    lcl <- beta - z * se
+    ucl <- beta + z * se
+    pvalue <- find_pvalue(coefs)
+    variable <- find_variable_names_for_labels(rownames(coefs), model)
+    level <- find_levels_for_labels(rownames(coefs), model)
+    data.frame(variable, level, beta, se, pvalue, lcl, ucl, stringsAsFactors = FALSE)
 }
 
 find_pvalue <- function(x) {

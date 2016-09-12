@@ -6,9 +6,9 @@ model <- fitted_models[[1]]
 model_summary <- summary(model)
 expected_beta <- data.frame(
     x0 = c(1, 2), x1 = c(1, 2),
-    y0 = c(0, model_summary[model_summary$variable == "x11", "lcl"]),
-    y1 = c(0, model_summary[model_summary$variable == "x11", "ucl"]),
-    midpoints = c(0, model_summary[model_summary$variable == "x11", "beta"]),
+    y0 = c(0, with(model_summary, model_summary[variable == "x1" & level == "1", "lcl"])),
+    y1 = c(0, with(model_summary, model_summary[variable == "x1" & level == "1", "ucl"])),
+    midpoints = c(0, with(model_summary, model_summary[variable == "x1" & level == "1", "beta"])),
     stringsAsFactors = FALSE)
 attr(expected_beta, "reference_line") <- 0
 

@@ -200,7 +200,8 @@ find_plot_labels <- function(model, rows, columns, labels = NULL) {
 #'     \code{model}, otherwise (if \code{variable} is continuous)
 #'     returns \code{FALSE}.
 is_categorical <- function(variable, model) {
-    ! variable %in% summary(model)$variable
+    summary_table <- summary(model)
+    summary_table$level[summary_table$variable == variable] != ""
 }
 
 #' Find segments to plot (as confidence intervals)
@@ -231,8 +232,7 @@ find_segments_to_plot <- function(model, type = "beta") {
 
 find_estimates_for <- function(variable, model) {
     summary_table <- summary(model)
-    variable_labels <- paste0(variable, model$levels[[variable]])
-    summary_table[summary_table$variable %in% variable_labels, , drop = FALSE]
+    summary_table[summary_table$variable == variable, , drop = FALSE]
 }
 
 #' Escape characters from character class
