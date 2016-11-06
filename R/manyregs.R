@@ -120,17 +120,24 @@ fit_models <- function(models, data, cores = 1L) {
 
 fit_model <- function(model, data) {
     model$levels <- find_levels_of_variables(model, data)
-    tryCatch({
-        model$fit <- model$f(model, data)
-    }, warning = function(c) {
-        model$warning <<- conditionMessage(c)
-        model["fit"] <<- list(NULL)
-        warning(model$warning)
+    warn <- error <- NULL
+    model$fit <- withCallingHandlers(tryCatch({
+        model$f(model, data)
     }, error = function(c) {
-        model$error <<- conditionMessage(c)
-        model["fit"] <<- list(NULL)
-        warning(model$error)
+        error <<- conditionMessage(c)
+        NULL
+    }), warning = function(c) {
+        warn <<- conditionMessage(c)
+        invokeRestart("muffleWarning")
     })
+    if (!is.null(warn)) {
+        model$warning <- warn
+        warning(warn)
+    }
+    if (!is.null(error)) {
+        model$error <- error
+        warning(error)
+    }
     model
 }
 

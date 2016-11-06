@@ -19,6 +19,16 @@ test_that("warnings are saved in the model object", {
     expect_equal(fitted_model$warning, "a warning")
 })
 
+test_that("the model fit is saved even when warnings occur", {
+    f <- function(model, data) {
+        warning()
+        "saved"
+    }
+    model <- new_model("y", "x", "z", f, "f")
+    suppressWarnings(fitted_model <- fit_model(model, NULL))
+    expect_equal(fitted_model$fit, "saved")
+})
+
 test_that("errors are converted to warnings", {
     model <- new_model("y", "x", "z", stop, "f")
     expect_warning(fit_model(model, NULL))
