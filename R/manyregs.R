@@ -103,7 +103,7 @@ print.manyregs_model <- function(x, ...) {
 #'
 #' @export
 formula.manyregs_model <- function(x, env = parent.frame(), ...) {
-    formula(model_to_formula_string(x), env = env)
+    stats::formula(model_to_formula_string(x), env = env)
 }
 
 #' Fit models.
@@ -151,7 +151,7 @@ fit_model <- function(model, data) {
 #'     variables are \code{NULL}.
 find_levels_of_variables <- function(model, data) {
     variables <- unlist(model[c("outcome", "exposure", "adjustment")], use.names = FALSE)
-    setNames(lapply(variables, find_variable_levels, data), variables)
+    stats::setNames(lapply(variables, find_variable_levels, data), variables)
 }
 
 find_variable_levels <- function(term, data) {
@@ -240,7 +240,7 @@ summarize_fitted_model <- function(model) {
         outcome = model$outcome,
         variable = x$variable,
         level = x$level,
-        nobs = nobs(model$fit),
+        nobs = stats::nobs(model$fit),
         beta = x$beta,
         se = x$se,
         lcl = x$lcl,
@@ -268,10 +268,10 @@ summarize_non_fitted_model <- function(model) {
 #'     asymptotic normality of the effect estimates.  This assumption
 #'     might be violated in small samples.
 find_estimates <- function(model) {
-    coefs <- coef(summary(model$fit))
+    coefs <- stats::coef(summary(model$fit))
     beta <- coefs[, "Estimate"]
     se <- coefs[, grep("^Std.[ ]?[eE]rr(or)?$", colnames(coefs))]
-    z <- qnorm(1 - .05 / 2)
+    z <- stats::qnorm(1 - .05 / 2)
     lcl <- beta - z * se
     ucl <- beta + z * se
     pvalue <- find_pvalue(coefs)
@@ -370,13 +370,13 @@ distro <- function(x, label = NULL, probs = NULL, digits = 2L) {
         N = number_of_observations,
         NAs = number_of_missings,
         mean = mean(x),
-        sd = sd(x),
-        iqr = diff(quantile(x, c(.25, .75))),
+        sd = stats::sd(x),
+        iqr = diff(stats::quantile(x, c(.25, .75))),
         min = min(x),
         stringsAsFactors = FALSE)
     for (p in probs) {
         column_name <- paste0("p", 100 * p)
-        d[[column_name]] <- quantile(x, p)
+        d[[column_name]] <- stats::quantile(x, p)
     }
     d$max <- max(x)
     d[-(1:3)] <- lapply(d[-(1:3)], round, digits = digits)
@@ -435,7 +435,7 @@ compare_means <- function(column_names, by, data, digits = 4L) {
     }
     pvalues <- vapply(column_names, function(column) {
         x <- data[[column]]
-        t.test(x[!is.na(grp) & grp == values[1]],
+        stats::t.test(x[!is.na(grp) & grp == values[1]],
             x[!is.na(grp) & grp == values[2]])$p.value
     }, double(1), USE.NAMES = FALSE)
     data.frame(
@@ -464,7 +464,7 @@ compare_means <- function(column_names, by, data, digits = 4L) {
 #' @export
 compare_distros <- function(column_names, by, data, digits = 4L) {
     pvalues <- vapply(column_names, function(column_name) {
-        chisq.test(data[[column_name]], data[[by]])$p.value
+        stats::chisq.test(data[[column_name]], data[[by]])$p.value
     }, double(1), USE.NAMES = FALSE)
     data.frame(
         variable = column_names,
@@ -563,7 +563,7 @@ find_combinations <- function(outcomes = NULL, exposures = NULL, adjustments = N
 
 find_combinations_helper <- function(outcomes, exposures, adjustments, by) {
     by2 <- sub("^(adjustments)$", "adjustment_to_string(\\1)", by)
-    combinations <- lapply(setNames(eval(parse(text = sprintf(
+    combinations <- lapply(stats::setNames(eval(parse(text = sprintf(
         "expand.grid(%s, stringsAsFactors = FALSE)",
         paste(rev(by2), collapse = ", ")))), rev(by)), as.list)
     combinations$adjustments <- adjustment_from_string(

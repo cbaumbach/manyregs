@@ -33,11 +33,11 @@ find_layout <- function(nrow, ncol) {
 }
 
 margin_width <- function() {
-    lcm(1)
+    graphics::lcm(1)
 }
 
 plot_width <- function() {
-    lcm(3)
+    graphics::lcm(3)
 }
 
 #' Find outcomes, exposures, adjustments from a list of models
@@ -90,7 +90,7 @@ find_adjustments <- function(models) {
 #'     layout.
 #'
 find_page_row_column_variables <- function(variables, types) {
-    setNames(variables[types], names(types))
+    stats::setNames(variables[types], names(types))
 }
 
 #' Map outcomes, exposures, and adjustments to pages, rows, and columns
@@ -370,8 +370,8 @@ plot_models <- function(models, rows = "outcomes", columns = "exposures", labels
 #' @export
 create_pdf <- function(filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta") {
     dimensions <- find_device_dimensions(models, rows, columns)
-    pdf(filename, dimensions$width, dimensions$height, paper = "special")
-    tryCatch(plot_models(models, rows, columns, labels, type), finally = dev.off())
+    grDevices::pdf(filename, dimensions$width, dimensions$height, paper = "special")
+    tryCatch(plot_models(models, rows, columns, labels, type), finally = grDevices::dev.off())
 }
 
 create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta", ppi = 200) {
@@ -379,7 +379,7 @@ create_bitmap <- function(bitmap, filename, models, rows = NULL, columns = NULL,
     dimensions <- find_device_dimensions(models, rows, columns)
     epsilon <- .005
     bitmap(filename, dimensions$width + epsilon, dimensions$height + epsilon, units = "in", res = ppi)
-    tryCatch(plot_models(models, rows, columns, labels, type), finally = dev.off())
+    tryCatch(plot_models(models, rows, columns, labels, type), finally = grDevices::dev.off())
 }
 
 maybe_insert_format_string <- function(filename, models, rows, columns) {
@@ -394,13 +394,13 @@ maybe_insert_format_string <- function(filename, models, rows, columns) {
 #' @rdname create_pdf
 #' @export
 create_jpeg <- function(filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta", ppi = 200) {
-    create_bitmap(jpeg, filename, models, rows, columns, labels, type, ppi)
+    create_bitmap(grDevices::jpeg, filename, models, rows, columns, labels, type, ppi)
 }
 
 #' @rdname create_pdf
 #' @export
 create_png <- function(filename, models, rows = NULL, columns = NULL, labels = NULL, type = "beta", ppi = 200) {
-    create_bitmap(png, filename, models, rows, columns, labels, type, ppi)
+    create_bitmap(grDevices::png, filename, models, rows, columns, labels, type, ppi)
 }
 
 #' Find number of outcomes, exposures, or adjustments
@@ -413,9 +413,9 @@ find_number_of <- function(type, models) {
 }
 
 set_layout <- function(layout_info) {
-    layout(layout_info$mat, layout_info$widths, layout_info$heights)
-    par(mar = c(0, 0, 0, 0))
-    par(omi = c(cm_to_inches(outer_margin_in_cm()), 0, 0, 0))
+    graphics::layout(layout_info$mat, layout_info$widths, layout_info$heights)
+    graphics::par(mar = c(0, 0, 0, 0))
+    graphics::par(omi = c(cm_to_inches(outer_margin_in_cm()), 0, 0, 0))
 }
 
 outer_margin_in_cm <- function() {
@@ -429,12 +429,12 @@ plot_a_model <- function(model, rows, columns, xylim, position, labels, type = "
 
 plot_segments <- function(model, xlim, ylim, type = "beta") {
     segment <- find_segments_to_plot(model, type)
-    plot(1, xlim = xlim, ylim = ylim, ann = FALSE, axes = FALSE, type = "n")
-    segments(segment$x0, segment$y0, segment$x1, segment$y1)
+    graphics::plot(1, xlim = xlim, ylim = ylim, ann = FALSE, axes = FALSE, type = "n")
+    graphics::segments(segment$x0, segment$y0, segment$x1, segment$y1)
     pt <- find_point_settings(nrow(segment))
-    abline(h = attr(segment, "reference_line"), lty = "dashed")
-    points(segment$x0, segment$midpoints, pch = pt$pch, cex = pt$cex, bg = pt$bg)
-    box()
+    graphics::abline(h = attr(segment, "reference_line"), lty = "dashed")
+    graphics::points(segment$x0, segment$midpoints, pch = pt$pch, cex = pt$cex, bg = pt$bg)
+    graphics::box()
 }
 
 find_point_settings <- function(number_of_segments) {
@@ -457,13 +457,13 @@ plot_labels <- function(model, rows, columns, position, labels) {
     plot_labels <- find_plot_labels(model, rows, columns, labels)
     cex <- sqrt(1/2)
     if (position$left)
-        mtext(plot_labels$row, side = 2, line = 1, xpd = NA, cex = cex)
+        graphics::mtext(plot_labels$row, side = 2, line = 1, xpd = NA, cex = cex)
     if (position$right)
-        axis(4, las = 1)
+        graphics::axis(4, las = 1)
     if (position$top)
-        mtext(plot_labels$column, side = 3, line = 1, xpd = NA, cex = cex)
+        graphics::mtext(plot_labels$column, side = 3, line = 1, xpd = NA, cex = cex)
     if (position$top && position$left)  # only for 1st plot of page
-        mtext(plot_labels$page, side = 1, line = 1, outer = TRUE, cex = cex)
+        graphics::mtext(plot_labels$page, side = 1, line = 1, outer = TRUE, cex = cex)
 }
 
 #' Translate strings
