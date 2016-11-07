@@ -14,6 +14,9 @@ find_levels_for_labels(labels, model)
 }
 \arguments{
 \item{model}{Fitted model}
+
+\item{labels}{Character vector of labels as used in row names of
+\code{coef(summary(model$fit))}}
 }
 \value{
 A data frame with columns "labels", "variables", and

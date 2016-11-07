@@ -121,7 +121,7 @@ fit_models <- function(models, data, cores = 1L) {
 fit_model <- function(model, data) {
     model$levels <- find_levels_of_variables(model, data)
     warn <- error <- NULL
-    model$fit <- withCallingHandlers(tryCatch({
+    fit <- withCallingHandlers(tryCatch({
         model$f(model, data)
     }, error = function(c) {
         error <<- conditionMessage(c)
@@ -130,6 +130,7 @@ fit_model <- function(model, data) {
         warn <<- conditionMessage(c)
         invokeRestart("muffleWarning")
     })
+    model["fit"] <- list(fit)
     if (!is.null(warn)) {
         model$warning <- warn
         warning(warn)
@@ -217,7 +218,12 @@ remove_slots <- function(model, slots) {
 #'
 #' @export
 summarize_models <- function(models) {
-    do.call(rbind, lapply(models, summary))
+    result <- do.call(rbind, lapply(models, summary))
+    if ("warning" %in% names(result) && all(is.na(result$warning)))
+        result$warning <- NULL
+    if ("error" %in% names(result) && all(is.na(result$error)))
+        result$error <- NULL
+    result
 }
 
 #' Summarize model.
@@ -240,13 +246,15 @@ summarize_fitted_model <- function(model) {
         outcome = model$outcome,
         variable = x$variable,
         level = x$level,
-        nobs = stats::nobs(model$fit),
+        nobs = x$nobs,
         beta = x$beta,
         se = x$se,
         lcl = x$lcl,
         ucl = x$ucl,
         pvalue = x$pvalue,
         model = as.character(model),
+        warning = if (is.null(model$warning)) NA_character_ else model$warning,
+        error = if (is.null(model$error)) NA_character_ else model$error,
         stringsAsFactors = FALSE)
 }
 
@@ -268,16 +276,24 @@ summarize_non_fitted_model <- function(model) {
 #'     asymptotic normality of the effect estimates.  This assumption
 #'     might be violated in small samples.
 find_estimates <- function(model) {
+    if (is.null(model$fit)) {
+        result <- data.frame(
+            variable = c("(Intercept)", model$exposure, model$adjustment),
+            level = NA_integer_, nobs = NA_integer_, beta = NA_real_, se = NA_real_,
+            pvalue = NA_real_, lcl = NA_real_, ucl = NA_real_, stringsAsFactors = FALSE)
+        return(result)
+    }
     coefs <- stats::coef(summary(model$fit))
+    variable <- find_variable_names_for_labels(rownames(coefs), model)
+    level <- find_levels_for_labels(rownames(coefs), model)
+    nobs <- stats::nobs(model$fit)
     beta <- coefs[, "Estimate"]
     se <- coefs[, grep("^Std.[ ]?[eE]rr(or)?$", colnames(coefs))]
     z <- stats::qnorm(1 - .05 / 2)
     lcl <- beta - z * se
     ucl <- beta + z * se
     pvalue <- find_pvalue(coefs)
-    variable <- find_variable_names_for_labels(rownames(coefs), model)
-    level <- find_levels_for_labels(rownames(coefs), model)
-    data.frame(variable, level, beta, se, pvalue, lcl, ucl, stringsAsFactors = FALSE)
+    data.frame(variable, level, nobs, beta, se, pvalue, lcl, ucl, stringsAsFactors = FALSE)
 }
 
 find_pvalue <- function(x) {
@@ -609,6 +625,8 @@ adjustment_from_string <- function(adjustment_string) {
 
 #' Map labels as used in output of \code{summary} to variables/levels
 #'
+#' @param labels Character vector of labels as used in row names of
+#'     \code{coef(summary(model$fit))}
 #' @param model Fitted model
 #' @return A data frame with columns "labels", "variables", and
 #'     "levels".  The data frame represents a mapping from labels to

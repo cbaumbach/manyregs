@@ -50,3 +50,33 @@ test_that("pvalue", {
 test_that("model", {
     expect_equal(actual$model, rep("y1 ~ x1  (linear)", 2))
 })
+
+test_that("warning", {
+    expect_equal(actual$warning, c(NA_character_, NA_character_))
+})
+
+test_that("error", {
+    expect_equal(actual$error, c(NA_character_, NA_character_))
+})
+
+test_that("if model$fit is NULL, we obtain minimal but useful output with many NAs", {
+    data <- create_dataset("y", "x")
+    f <- function(model, data) stop("an error")
+    model <- create_models("y", "x", f = f)[[1]]
+    suppressWarnings(fitted_model <- fit_model(model, data))
+
+    actual <- summary(fitted_model)
+
+    expect_equal(actual$outcome, c("y", "y"))
+    expect_equal(actual$variable, c("(Intercept)", "x"))
+    expect_equal(actual$level, c(NA_integer_, NA_integer_))
+    expect_equal(actual$nobs, c(NA_integer_, NA_integer_))
+    expect_equal(actual$beta, c(NA_real_, NA_real_))
+    expect_equal(actual$se, c(NA_real_, NA_real_))
+    expect_equal(actual$lcl, c(NA_real_, NA_real_))
+    expect_equal(actual$ucl, c(NA_real_, NA_real_))
+    expect_equal(actual$pvalue, c(NA_real_, NA_real_))
+    expect_equal(actual$model, c("y ~ x  (f)", "y ~ x  (f)"))
+    expect_equal(actual$warning, c(NA_character_, NA_character_))
+    expect_equal(actual$error, c("an error", "an error"))
+})
