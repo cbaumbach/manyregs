@@ -6,15 +6,13 @@
 \alias{find_variable_names_for_labels}
 \title{Map labels as used in output of \code{summary} to variables/levels}
 \usage{
-find_mapping_for_labels(labels, model)
+find_mapping_for_labels(model)
 
 find_variable_names_for_labels(labels, model)
 
 find_levels_for_labels(labels, model)
 }
 \arguments{
-\item{labels}{Character vector of labels}
-
 \item{model}{Fitted model}
 }
 \value{

@@ -609,7 +609,6 @@ adjustment_from_string <- function(adjustment_string) {
 
 #' Map labels as used in output of \code{summary} to variables/levels
 #'
-#' @param labels Character vector of labels
 #' @param model Fitted model
 #' @return A data frame with columns "labels", "variables", and
 #'     "levels".  The data frame represents a mapping from labels to
@@ -620,7 +619,7 @@ adjustment_from_string <- function(adjustment_string) {
 #'     variable-level combination are be mapped to NA.  The variable
 #'     name for the label "(Intercept)" is the label itself.  Labels
 #'     of non-factor variables have an empty string as their "level".
-find_mapping_for_labels <- function(labels, model) {
+find_mapping_for_labels <- function(model) {
     levels <- lapply(model$levels, function(x) if (is.null(x)) "" else x)
     variables <- rep(names(levels), sapply(levels, length))
     data.frame(labels = c(paste0(variables, unlist(levels)), "(Intercept)"),
@@ -630,12 +629,12 @@ find_mapping_for_labels <- function(labels, model) {
 
 #' @rdname find_mapping_for_labels
 find_variable_names_for_labels <- function(labels, model) {
-    map <- find_mapping_for_labels(labels, model)
+    map <- find_mapping_for_labels(model)
     map$variables[match(labels, map$labels)]
 }
 
 #' @rdname find_mapping_for_labels
 find_levels_for_labels <- function(labels, model) {
-    map <- find_mapping_for_labels(labels, model)
+    map <- find_mapping_for_labels(model)
     map$levels[match(labels, map$labels)]
 }
