@@ -622,9 +622,9 @@ adjustment_from_string <- function(adjustment_string) {
 find_mapping_for_labels <- function(model) {
     levels <- lapply(model$levels, function(x) if (is.null(x)) "" else x)
     variables <- rep(names(levels), sapply(levels, length))
-    data.frame(labels = c(paste0(variables, unlist(levels)), "(Intercept)"),
-        variables = c(variables, "(Intercept)"),
-        levels = c(unlist(levels), ""), stringsAsFactors = FALSE)
+    data.frame(labels = c("(Intercept)", paste0(variables, unlist(levels))),
+        variables = c("(Intercept)", variables),
+        levels = c("", unlist(levels)), stringsAsFactors = FALSE)
 }
 
 #' @rdname find_mapping_for_labels
