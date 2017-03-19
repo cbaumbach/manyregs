@@ -1,15 +1,20 @@
 new_term <- function(variable, data) {
     parts <- NULL
     if (is_interaction_term(variable)) {
-        vs <- split_interaction_term(variable)
-        t1 <- new_term(vs[1], data)
-        t2 <- new_term(vs[2], data)
-        x <- expand.grid(unique(levels(t1)), unique(levels(t2)))
-        labels <- paste0(vs[1], x[[1]], ":", vs[2], x[[2]])
-        if (all(x[[1]] == "") || all(x[[2]] == ""))
-            levels <- ""
+        vars <- split_interaction_term(variable)
+        levels_ <- expand.grid(
+            levels(new_term(vars[1], data)),
+            levels(new_term(vars[2], data)),
+            stringsAsFactors = FALSE)
+        labels <- paste0(vars[1], levels_[[1]], ":", vars[2], levels_[[2]])
+        if (is.factor(data[[vars[1]]]) && is.factor(data[[vars[2]]]))
+            levels <- paste0(levels_[[1]], ":", levels_[[2]])
+        else if (is.factor(data[[vars[1]]]))
+            levels <- levels_[[1]]
+        else if (is.factor(data[[vars[2]]]))
+            levels <- levels_[[2]]
         else
-            levels <- paste0(x[[1]], ":", x[[2]])
+            levels <- ""
     } else if (is_factor_crossing(variable)) {
         vs <- split_factor_crossing(variable)
         parts <- list(
