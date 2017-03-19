@@ -51,6 +51,7 @@ split_term <- function(term, sep) {
     unlist(strsplit(term, sep, fixed = TRUE), use.names = FALSE)
 }
 
+#' @export
 summary.manyregs_term <- function(object, ...) {
     if (is.null(object$parts)) {
         data.frame(stringsAsFactors = FALSE,
