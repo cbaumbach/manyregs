@@ -119,7 +119,7 @@ fit_models <- function(models, data, cores = 1L) {
 }
 
 fit_model <- function(model, data) {
-    model$levels <- find_levels_of_variables(model, data)
+    model$levels <- find_levels(model, data)
     warn <- error <- NULL
     fit <- withCallingHandlers(tryCatch({
         model$f(model, data)
@@ -142,40 +142,21 @@ fit_model <- function(model, data) {
     model
 }
 
-#' Find levels of variables
-#'
-#' @param model Model object
-#' @param data Dataset
-#' @return A named list containing the levels of variables in
-#'     \code{model} as found in \code{data}.  Elements are named
-#'     according to the corresponding variable.  Levels of non-factor
-#'     variables are \code{NULL}.
-find_levels_of_variables <- function(model, data) {
-    variables <- unlist(model[c("outcome", "exposure", "adjustment")], use.names = FALSE)
-    stats::setNames(lapply(variables, find_variable_levels, data), variables)
+find_levels <- function(model, data) {
+    rbind(
+        data.frame(stringsAsFactors = FALSE,
+            label = "(Intercept)",
+            variable = "(Intercept)",
+            level = ""
+        ),
+        do.call(rbind, lapply(terms(model), function(term) {
+            summary(new_term(term, data))
+        }))
+    )
 }
 
-find_variable_levels <- function(term, data) {
-    if (is.null(data))
-        return(NA_character_)
-    if (is_interaction(term))
-        find_interaction_levels(term, data)
-    else
-        eval(parse(text = sprintf("levels(%s)", term)), data)
-}
-
-is_interaction <- function(term) {
-    grepl(":", term) || grepl("*", term, fixed = TRUE)
-}
-
-find_interaction_levels <- function(term, data) {
-    variables <- unlist(strsplit(term, ":|\\*"), use.names = FALSE)
-    levels <- lapply(variables, find_variable_levels, data)
-    is_null <- Reduce(function(x, y) c(x, is.null(y)), levels, NULL)
-    if (all(is_null))
-        NULL
-    else
-        levels
+terms.manyregs_model <- function(x, ...) {
+    unlist(x[c("outcome", "exposure", "adjustment")], use.names = FALSE)
 }
 
 #' Remove slots from a model.
@@ -623,36 +604,12 @@ adjustment_from_string <- function(adjustment_string) {
     })
 }
 
-#' Map labels as used in output of \code{summary} to variables/levels
-#'
-#' @param labels Character vector of labels as used in row names of
-#'     \code{coef(summary(model$fit))}
-#' @param model Fitted model
-#' @return A data frame with columns "labels", "variables", and
-#'     "levels".  The data frame represents a mapping from labels to
-#'     variables and levels.  The data frame is used by
-#'     \code{find_variable_names_for_labels} and
-#'     \code{find_levels_for_labels} to map labels to variable names
-#'     and levels respectively.  Labels that don't match any valid
-#'     variable-level combination are be mapped to NA.  The variable
-#'     name for the label "(Intercept)" is the label itself.  Labels
-#'     of non-factor variables have an empty string as their "level".
-find_mapping_for_labels <- function(model) {
-    levels <- lapply(model$levels, function(x) if (is.null(x)) "" else x)
-    variables <- rep(names(levels), sapply(levels, length))
-    data.frame(labels = c("(Intercept)", paste0(variables, unlist(levels))),
-        variables = c("(Intercept)", variables),
-        levels = c("", unlist(levels)), stringsAsFactors = FALSE)
-}
-
-#' @rdname find_mapping_for_labels
 find_variable_names_for_labels <- function(labels, model) {
-    map <- find_mapping_for_labels(model)
-    map$variables[match(labels, map$labels)]
+    map <- model$levels
+    map$variable[match(labels, map$label)]
 }
 
-#' @rdname find_mapping_for_labels
 find_levels_for_labels <- function(labels, model) {
-    map <- find_mapping_for_labels(model)
-    map$levels[match(labels, map$labels)]
+    map <- model$levels
+    map$level[match(labels, map$label)]
 }
