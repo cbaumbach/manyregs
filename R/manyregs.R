@@ -119,7 +119,7 @@ fit_models <- function(models, data, cores = 1L) {
 }
 
 fit_model <- function(model, data) {
-    model$levels <- find_levels(model, data)
+    model$coef_label_map <- create_map_for_coef_labels(model, data)
     warn <- error <- NULL
     fit <- withCallingHandlers(tryCatch({
         model$f(model, data)
@@ -142,7 +142,7 @@ fit_model <- function(model, data) {
     model
 }
 
-find_levels <- function(model, data) {
+create_map_for_coef_labels <- function(model, data) {
     rbind(
         data.frame(stringsAsFactors = FALSE,
             label = "(Intercept)",
@@ -157,6 +157,14 @@ find_levels <- function(model, data) {
 
 terms.manyregs_model <- function(x, ...) {
     unlist(x[c("outcome", "exposure", "adjustment")], use.names = FALSE)
+}
+
+map_coef_label_to_variable <- function(label, map) {
+    map$variable[match(label, map$label)]
+}
+
+map_coef_label_to_level <- function(label, map) {
+    map$level[match(label, map$label)]
 }
 
 #' Remove slots from a model.
@@ -265,8 +273,8 @@ find_estimates <- function(model) {
         return(result)
     }
     coefs <- stats::coef(summary(model$fit))
-    variable <- find_variable_names_for_labels(rownames(coefs), model)
-    level <- find_levels_for_labels(rownames(coefs), model)
+    variable <- map_coef_label_to_variable(rownames(coefs), model$coef_label_map)
+    level <- map_coef_label_to_level(rownames(coefs), model$coef_label_map)
     nobs <- stats::nobs(model$fit)
     beta <- coefs[, "Estimate"]
     se <- coefs[, grep("^Std.[ ]?[eE]rr(or)?$", colnames(coefs))]
@@ -602,14 +610,4 @@ adjustment_from_string <- function(adjustment_string) {
         else
             x
     })
-}
-
-find_variable_names_for_labels <- function(labels, model) {
-    map <- model$levels
-    map$variable[match(labels, map$label)]
-}
-
-find_levels_for_labels <- function(labels, model) {
-    map <- model$levels
-    map$level[match(labels, map$label)]
 }
