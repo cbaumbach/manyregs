@@ -44,11 +44,11 @@ split_interaction_term <- function(term) {
 }
 
 split_factor_crossing <- function(term) {
-    split_term(term, "*")
+    split_term(term, "\\s*\\*\\s*")
 }
 
 split_term <- function(term, sep) {
-    unlist(strsplit(term, sep, fixed = TRUE), use.names = FALSE)
+    unlist(strsplit(term, sep, perl = TRUE), use.names = FALSE)
 }
 
 #' @export

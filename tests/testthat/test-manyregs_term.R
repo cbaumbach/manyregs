@@ -89,7 +89,7 @@ test_that("factor crossing between 2 quantitative variables", {
 
 test_that("factor crossing between a quantitative variable and a factor", {
     data <- create_dataset("x", c("y", 2))
-    term <- new_term("x*y", data)
+    term <- new_term("x * y", data)
     actual <- summary(term)
     expected <- read.table(text = "
         label variable level
