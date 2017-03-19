@@ -9,7 +9,7 @@ new_term <- function(variable, data) {
         if (all(x[[1]] == "") || all(x[[2]] == ""))
             levels <- ""
         else
-            levels <- paste0(x[[1]], ".", x[[2]])
+            levels <- paste0(x[[1]], ":", x[[2]])
     } else if (is_factor_crossing(variable)) {
         vs <- split_factor_crossing(variable)
         parts <- list(

@@ -64,12 +64,12 @@ test_that("interaction between 2 factors", {
     actual <- summary(term)
     expected <- read.table(text = "
         label variable level
-        x1:y1      x:y   1.1
-        x2:y1      x:y   2.1
-        x3:y1      x:y   3.1
-        x1:y2      x:y   1.2
-        x2:y2      x:y   2.2
-        x3:y2      x:y   3.2
+        x1:y1      x:y   1:1
+        x2:y1      x:y   2:1
+        x3:y1      x:y   3:1
+        x1:y2      x:y   1:2
+        x2:y2      x:y   2:2
+        x3:y2      x:y   3:2
     ", header = TRUE, colClasses = "character")
     expect_equal(actual, expected)
 })
@@ -128,12 +128,12 @@ test_that("factor crossing between 2 factors", {
            x3        x     3
            y1        y     1
            y2        y     2
-        x1:y1      x:y   1.1
-        x2:y1      x:y   2.1
-        x3:y1      x:y   3.1
-        x1:y2      x:y   1.2
-        x2:y2      x:y   2.2
-        x3:y2      x:y   3.2
+        x1:y1      x:y   1:1
+        x2:y1      x:y   2:1
+        x3:y1      x:y   3:1
+        x1:y2      x:y   1:2
+        x2:y2      x:y   2:2
+        x3:y2      x:y   3:2
     ", header = TRUE, colClasses = "character")
     expect_equal(actual, expected)
 })
